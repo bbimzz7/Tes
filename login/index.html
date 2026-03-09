@@ -1,12 +1,406 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Key — VertictHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#020810;--bg2:#050d1a;--surface:#0a1628;--surface2:#0d1d35;
+  --border:rgba(0,160,255,0.1);--bhi:rgba(0,160,255,0.22);
+  --blue:#0099ff;--blue2:#00c3ff;--chrome:#c8d8e8;--chrome2:#e8f2ff;
+  --text:#cce0f5;--muted:#4a6080;--muted2:#2a3a50;
+  --green:#00e5a0;--red:#ff3a5c;--yellow:#ffb800;
+  --orb:'Orbitron',monospace;--body:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.45;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;padding:0 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,8,16,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo img{width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(0,153,255,0.6))}
+.nav-brand{font-family:var(--orb);font-size:14px;font-weight:700;letter-spacing:1px;color:var(--chrome2);text-shadow:0 0 20px rgba(0,153,255,0.4)}
+.nav-brand b{color:var(--blue2);font-weight:900}
+.nav-back{font-family:var(--orb);font-size:10px;color:var(--muted);text-decoration:none;letter-spacing:1px;display:flex;align-items:center;gap:8px;transition:color 0.2s;text-transform:uppercase}
+.nav-back:hover{color:var(--text)}
+.nav-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* LAYOUT */
+.main{padding-top:66px;min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+
+/* LEFT */
+.left{padding:56px 52px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+.left::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,153,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,153,255,0.025) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 100% 100% at 0% 0%,black 20%,transparent 80%)}
+.left::after{content:'';position:absolute;top:0;bottom:0;right:0;width:1px;background:linear-gradient(180deg,transparent,rgba(0,195,255,0.25),transparent)}
+
+.p-tag{font-family:var(--orb);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--blue2);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.p-tag::before{content:'';width:20px;height:1px;background:var(--blue2);box-shadow:0 0 6px var(--blue2)}
+.p-title{font-family:var(--orb);font-size:40px;font-weight:900;letter-spacing:-1px;color:var(--chrome2);line-height:1;margin-bottom:16px;text-shadow:0 0 40px rgba(0,153,255,0.15)}
+.p-desc{font-size:14px;line-height:1.85;color:var(--muted);margin-bottom:44px}
+
+/* HWID BOX */
+.hwid-sec{margin-bottom:36px}
+.hwid-lbl{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px}
+.hwid-box{background:var(--surface);border:1px solid var(--bhi);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;overflow:hidden;box-shadow:inset 0 0 20px rgba(0,100,200,0.06)}
+.hwid-box::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blue),var(--blue2))}
+.hwid-val{font-family:'Courier New',monospace;font-size:13px;color:var(--blue2);letter-spacing:1px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hwid-copy{flex-shrink:0;width:30px;height:30px;border:1px solid var(--bhi);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;color:var(--muted)}
+.hwid-copy:hover{background:var(--surface2);color:var(--text);border-color:rgba(0,195,255,0.35)}
+.hwid-copy svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.hwid-note{margin-top:8px;font-size:11px;color:var(--muted2);line-height:1.75}
+
+/* INFO CARDS */
+.info-cards{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.ic{background:var(--surface);border:1px solid var(--border);padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.ic svg{flex-shrink:0;width:15px;height:15px;stroke:var(--blue2);fill:none;stroke-width:1.5;margin-top:2px}
+.ic-t{font-size:12px;color:var(--muted);line-height:1.75}
+.ic-t strong{color:var(--text);font-weight:600}
+
+/* RIGHT */
+.right{padding:56px 52px;background:var(--bg2);display:flex;flex-direction:column}
+
+/* TABS */
+.src-tabs{display:flex;gap:0;margin-bottom:40px;border:1px solid var(--border);background:var(--surface);overflow:hidden}
+.src-tab{flex:1;padding:14px 16px;background:transparent;border:none;font-family:var(--orb);font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:1px;text-transform:uppercase;position:relative}
+.src-tab.active{background:rgba(0,153,255,0.06);color:var(--chrome2)}
+.src-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--blue2))}
+.src-tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* PANEL */
+.tab-pnl{display:none;animation:fadeIn 0.3s ease}
+.tab-pnl.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.f-title{font-family:var(--orb);font-size:18px;font-weight:800;color:var(--chrome2);margin-bottom:8px;letter-spacing:0.5px}
+.f-sub{font-size:13px;line-height:1.85;color:var(--muted);margin-bottom:28px}
+
+/* FIELDS */
+.field{margin-bottom:18px}
+.f-lbl{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.f-lbl .req{color:var(--red)}
+.f-inp{width:100%;padding:13px 16px;background:var(--surface);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:13px;outline:none;transition:border-color 0.2s}
+.f-inp:focus{border-color:rgba(0,195,255,0.45);box-shadow:0 0 0 3px rgba(0,153,255,0.06)}
+.f-inp::placeholder{color:var(--muted2)}
+.f-inp[readonly]{color:var(--blue2);cursor:default}
+.f-hint{font-size:11px;color:var(--muted2);margin-top:6px;line-height:1.7}
+.f-hint a{color:var(--blue2);text-decoration:none}
+
+/* SUBMIT */
+.btn-sub{width:100%;padding:15px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;font-family:var(--orb);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;margin-top:8px;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 30px rgba(0,153,255,0.28)}
+.btn-sub:hover:not(:disabled){box-shadow:0 6px 44px rgba(0,195,255,0.48);transform:translateY(-1px)}
+.btn-sub:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.btn-sub svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* STATUS */
+.status-box{margin-top:18px;padding:14px 18px;font-size:12px;line-height:1.8;display:none;position:relative;font-family:'Courier New',monospace}
+.status-box.show{display:block}
+.status-box.loading{border:1px solid var(--bhi);color:var(--muted);background:var(--surface)}
+.status-box.error{border:1px solid rgba(255,58,92,0.3);color:var(--red);background:rgba(255,58,92,0.05)}
+.status-box.success{border:1px solid rgba(0,229,160,0.3);color:var(--green);background:rgba(0,229,160,0.04)}
+.status-box::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.status-box.loading::before{background:var(--muted)}
+.status-box.error::before{background:var(--red)}
+.status-box.success::before{background:var(--green)}
+
+/* KEY RESULT */
+.key-res{margin-top:18px;background:var(--surface);border:1px solid rgba(0,229,160,0.25);padding:26px;position:relative;overflow:hidden;display:none}
+.key-res.show{display:block}
+.key-res::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.kr-lbl{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:10px}
+.kr-key{font-family:'Courier New',monospace;font-size:19px;font-weight:700;color:var(--green);letter-spacing:2px;word-break:break-all;margin-bottom:10px;text-shadow:0 0 24px rgba(0,229,160,0.4)}
+.kr-meta{display:flex;gap:20px;margin-bottom:18px;flex-wrap:wrap}
+.kr-mi{font-family:var(--orb);font-size:9px;color:var(--muted);letter-spacing:1px}
+.kr-mi span{color:var(--blue2)}
+.kr-copy{width:100%;padding:11px;background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);color:var(--green);font-family:var(--orb);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.kr-copy:hover{background:rgba(0,229,160,0.14)}
+.kr-copy svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* SCRIPT INFO */
+.si-box{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:26px}
+.si-t{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.si-flow{display:flex;flex-direction:column;gap:10px}
+.si-step{display:flex;align-items:flex-start;gap:11px}
+.si-n{flex-shrink:0;width:22px;height:22px;background:rgba(0,153,255,0.08);border:1px solid rgba(0,153,255,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--orb);font-size:9px;color:var(--blue2);font-weight:700}
+.si-tx{font-size:12px;color:var(--muted);line-height:1.8;padding-top:2px}
+.si-tx strong{color:var(--text);font-weight:600}
+
+/* SPINNER */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:sp 0.7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  nav{padding:0 20px}
+  .main{grid-template-columns:1fr}
+  .left{padding:36px 20px;border-right:none;border-bottom:1px solid var(--border)}
+  .right{padding:36px 20px}
+  .info-cards{margin-top:28px}
+}
+</style>
 </head>
 <body>
-  <h1>Login Page</h1>
-  <p>This is /login/index.html</p>
-  <a href="/">Back to Home</a>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/logo.png" alt="VH">
+    <span class="nav-brand">Vertic<b>Hub</b></span>
+  </a>
+  <a href="/" class="nav-back">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Kembali
+  </a>
+</nav>
+
+<div class="main">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="p-tag">Get Key</div>
+    <h1 class="p-title">AMBIL<br>KEY.</h1>
+    <p class="p-desc">Key berlaku 24 jam, terikat ke HWID device dan username Roblox. Pilih metode sesuai cara kamu request key.</p>
+
+    <div class="hwid-sec">
+      <div class="hwid-lbl">Browser HWID Kamu</div>
+      <div class="hwid-box">
+        <div class="hwid-val" id="hwidDisplay">Mendeteksi...</div>
+        <button class="hwid-copy" id="hwidCopyBtn" title="Salin HWID">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <div class="hwid-note">HWID unik browser kamu. Digunakan saat ambil key via website. Catat ini untuk keperluan support.</div>
+    </div>
+
+    <div class="info-cards">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div class="ic-t"><strong>Satu HWID, satu key.</strong> Browser HWID hanya bisa generate 1 key aktif. Key baru dibuat saat key lama expired.</div></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="ic-t"><strong>Username harus cocok.</strong> Username Roblox saat verifikasi di game wajib sama persis dengan yang didaftarkan.</div></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><div class="ic-t"><strong>Expire 24 jam.</strong> Key kadaluarsa otomatis setelah 24 jam. Ambil key baru setiap hari — gratis selamanya.</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="src-tabs">
+      <button class="src-tab active" id="tabBrowser" onclick="switchSrc('browser')">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Via Browser
+      </button>
+      <button class="src-tab" id="tabScript" onclick="switchSrc('script')">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Via Script
+      </button>
+    </div>
+
+    <!-- Browser Tab -->
+    <div class="tab-pnl active" id="pnlBrowser">
+      <div class="f-title">Ambil Key via Browser</div>
+      <div class="f-sub">Masukkan username Roblox kamu. HWID browser terdeteksi otomatis dan terdaftar saat kamu login dengan key di game.</div>
+      <div class="field">
+        <div class="f-lbl">Username Roblox <span class="req">*</span></div>
+        <input type="text" class="f-inp" id="inputUsername" placeholder="Masukkan username Roblox..." autocomplete="off" spellcheck="false">
+        <div class="f-hint">Harus sama persis. Cek di <a href="https://www.roblox.com/users/profile" target="_blank">roblox.com/users/profile</a></div>
+      </div>
+      <div class="field">
+        <div class="f-lbl">Browser HWID</div>
+        <input type="text" class="f-inp" id="inputHwidShow" readonly placeholder="Mendeteksi...">
+        <div class="f-hint">Terdeteksi otomatis dari browser kamu.</div>
+      </div>
+      <button class="btn-sub" id="btnGet" onclick="doGetKey()">
+        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Generate Key
+      </button>
+      <div class="status-box" id="stBrowser"></div>
+      <div class="key-res" id="resBrowser"></div>
+    </div>
+
+    <!-- Script Tab -->
+    <div class="tab-pnl" id="pnlScript">
+      <div class="f-title">Key via Script Roblox</div>
+      <div class="f-sub">Jika kamu sudah menjalankan script di game, HWID dan username terkirim otomatis dari executor.</div>
+
+      <div class="si-box">
+        <div class="si-t">Alur Pengambilan Key</div>
+        <div class="si-flow">
+          <div class="si-step"><div class="si-n">1</div><div class="si-tx">Jalankan script di executor Roblox. GUI verifikasi muncul di layar.</div></div>
+          <div class="si-step"><div class="si-n">2</div><div class="si-tx">Klik tombol <strong>"Belum punya key? Ambil di sini"</strong> di dalam GUI.</div></div>
+          <div class="si-step"><div class="si-n">3</div><div class="si-tx">Script otomatis request signed token dan link disalin ke clipboard.</div></div>
+          <div class="si-step"><div class="si-n">4</div><div class="si-tx">Buka link di browser. Key otomatis tergenerate dengan HWID dan username dari game.</div></div>
+          <div class="si-step"><div class="si-n">5</div><div class="si-tx">Salin key, paste ke GUI di game, tekan Verifikasi.</div></div>
+        </div>
+      </div>
+
+      <div id="scriptTokenSec" style="display:none">
+        <div class="field">
+          <div class="f-lbl">Status Token</div>
+          <input type="text" class="f-inp" id="tokenSt" readonly>
+        </div>
+        <div class="field">
+          <div class="f-lbl">Username (dari game)</div>
+          <input type="text" class="f-inp" id="tokenUname" readonly>
+        </div>
+        <div class="field">
+          <div class="f-lbl">HWID (dari game)</div>
+          <input type="text" class="f-inp" id="tokenHwid" readonly>
+        </div>
+        <button class="btn-sub" id="btnGetScript" onclick="doGetScript()">
+          <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          Ambil Key
+        </button>
+        <div class="status-box" id="stScript"></div>
+        <div class="key-res" id="resScript"></div>
+      </div>
+
+      <div id="noTokenSec">
+        <div class="status-box show loading">Buka halaman ini melalui link dari script Roblox. Atau gunakan tab <strong>Via Browser</strong> untuk ambil key manual.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = (location.origin === 'null' || location.origin.startsWith('file')) ? 'https://vh-api-alpha.vercel.app' : location.origin;
+
+// HWID
+function getBHwid() {
+  let id = null;
+  try { id = localStorage.getItem('vh_bhwid'); } catch(e){}
+  if (!id) {
+    const r = () => Math.random().toString(36).substring(2,8).toUpperCase();
+    id = 'WEB-' + r() + '-' + r() + '-' + Date.now().toString(36).toUpperCase();
+    try { localStorage.setItem('vh_bhwid', id); } catch(e){}
+  }
+  return id;
+}
+
+const BHWID = getBHwid();
+document.getElementById('hwidDisplay').textContent = BHWID;
+document.getElementById('inputHwidShow').value     = BHWID;
+
+document.getElementById('hwidCopyBtn').addEventListener('click', function() {
+  navigator.clipboard.writeText(BHWID).then(() => {
+    this.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    setTimeout(() => {
+      this.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    }, 1600);
+  });
+});
+
+function switchSrc(s) {
+  document.getElementById('tabBrowser').classList.toggle('active', s==='browser');
+  document.getElementById('tabScript').classList.toggle('active',  s==='script');
+  document.getElementById('pnlBrowser').classList.toggle('active', s==='browser');
+  document.getElementById('pnlScript').classList.toggle('active',  s==='script');
+}
+
+// Token check
+const params = new URLSearchParams(location.search);
+const tokD = params.get('d'), tokS = params.get('s');
+
+if (tokD && tokS) {
+  switchSrc('script');
+  document.getElementById('noTokenSec').style.display = 'none';
+  document.getElementById('scriptTokenSec').style.display = 'block';
+  try {
+    const p = JSON.parse(atob(tokD.replace(/-/g,'+').replace(/_/g,'/')));
+    document.getElementById('tokenSt').value = 'Token Valid — Berlaku 5 menit';
+    document.getElementById('tokenSt').style.color = 'var(--green)';
+    document.getElementById('tokenUname').value = p.username || '—';
+    document.getElementById('tokenHwid').value  = p.hwid     || '—';
+  } catch(e) {
+    document.getElementById('tokenSt').value = 'Token diterima dari script';
+    document.getElementById('tokenSt').style.color = 'var(--blue2)';
+  }
+} else if (params.get('expired')) {
+  switchSrc('script');
+  document.getElementById('noTokenSec').innerHTML = '<div class="status-box show error">Link expired. Token hanya berlaku 5 menit. Generate link baru dari GUI game.</div>';
+}
+
+// Helpers
+function setSt(el, msg, type) { el.textContent = msg; el.className = 'status-box show ' + type; }
+
+function showKey(cont, key, expires, reused) {
+  const e = new Date(expires);
+  const estr = e.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}) + ' ' + e.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  cont.innerHTML = `
+    <div class="kr-lbl">— KEY AKTIF —</div>
+    <div class="kr-key">${key}</div>
+    <div class="kr-meta">
+      <div class="kr-mi">EXPIRES: <span>${estr}</span></div>
+      <div class="kr-mi">STATUS: <span>${reused ? 'KEY LAMA' : 'KEY BARU'}</span></div>
+    </div>
+    <button class="kr-copy" onclick="cpKey('${key}',this)">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Salin Key
+    </button>`;
+  cont.classList.add('show');
+}
+
+function cpKey(key, btn) {
+  navigator.clipboard.writeText(key).then(() => {
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tersalin!`;
+    setTimeout(() => { btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Salin Key`; }, 2000);
+  });
+}
+
+function resetBtn(btn, label) {
+  btn.disabled = false;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> ${label}`;
+}
+
+async function doGetKey() {
+  const uname = document.getElementById('inputUsername').value.trim();
+  const st = document.getElementById('stBrowser');
+  const res = document.getElementById('resBrowser');
+  const btn = document.getElementById('btnGet');
+  res.classList.remove('show'); res.innerHTML = '';
+  if (!uname) { setSt(st,'Username Roblox wajib diisi.','error'); return; }
+  if (uname.length < 3 || uname.length > 20) { setSt(st,'Username Roblox harus 3-20 karakter.','error'); return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Memproses...';
+  setSt(st,'Menghubungi server...','loading');
+  try {
+    const r = await fetch(`${API}/api/getkey?hwid=${encodeURIComponent(BHWID)}&username=${encodeURIComponent(uname)}`,{headers:{'Accept':'application/json'}});
+    const d = await r.json();
+    st.classList.remove('show');
+    if (d.key) {
+      showKey(res, d.key, d.expires, d.reused);
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Berhasil`;
+    } else {
+      setSt(st, d.error||'Gagal. Coba lagi.','error');
+      resetBtn(btn,'Generate Key');
+    }
+  } catch(e) {
+    setSt(st,'Koneksi error. Coba lagi.','error');
+    resetBtn(btn,'Generate Key');
+  }
+}
+
+async function doGetScript() {
+  const st = document.getElementById('stScript');
+  const res = document.getElementById('resScript');
+  const btn = document.getElementById('btnGetScript');
+  res.classList.remove('show'); res.innerHTML = '';
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Memproses...';
+  setSt(st,'Memvalidasi token...','loading');
+  try {
+    const r = await fetch(`${API}/api/getkey?d=${encodeURIComponent(tokD)}&s=${encodeURIComponent(tokS)}`,{headers:{'Accept':'application/json'}});
+    const d = await r.json();
+    st.classList.remove('show');
+    if (d.key) {
+      showKey(res, d.key, d.expires, d.reused);
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Berhasil`;
+    } else {
+      setSt(st, d.error||'Token tidak valid atau expired. Generate link baru dari game.','error');
+      resetBtn(btn,'Coba Lagi');
+    }
+  } catch(e) {
+    setSt(st,'Koneksi error. Coba lagi.','error');
+    resetBtn(btn,'Coba Lagi');
+  }
+}
+
+document.getElementById('inputUsername').addEventListener('keydown', e => { if(e.key==='Enter') doGetKey(); });
+</script>
 </body>
 </html>
