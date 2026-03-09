@@ -1,13 +1,425 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VertictHub — Roblox Script</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg:       #020810;
+  --bg2:      #050d1a;
+  --bg3:      #081020;
+  --surface:  #0a1628;
+  --surface2: #0d1d35;
+  --border:   rgba(0,160,255,0.1);
+  --bhi:      rgba(0,160,255,0.22);
+  --blue:     #0099ff;
+  --blue2:    #00c3ff;
+  --chrome:   #c8d8e8;
+  --chrome2:  #e8f2ff;
+  --text:     #cce0f5;
+  --muted:    #4a6080;
+  --muted2:   #2a3a50;
+  --green:    #00e5a0;
+  --red:      #ff3a5c;
+  --yellow:   #ffb800;
+  --orb:      'Orbitron', monospace;
+  --body:     'Inter', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 66px;
+  padding: 0 52px; display: flex; align-items: center; justify-content: space-between;
+  background: rgba(2,8,16,0.88); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(0,153,255,0.6)); }
+.nav-brand { font-family: var(--orb); font-size: 15px; font-weight: 700; letter-spacing: 1px; color: var(--chrome2); text-shadow: 0 0 20px rgba(0,153,255,0.4); }
+.nav-brand b { color: var(--blue2); font-weight: 900; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  font-family: var(--orb); font-size: 11px; font-weight: 700;
+  padding: 10px 24px; background: linear-gradient(135deg, var(--blue), var(--blue2));
+  color: #fff; text-decoration: none; letter-spacing: 1.5px; text-transform: uppercase;
+  clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  box-shadow: 0 0 28px rgba(0,153,255,0.35); transition: all 0.2s;
+}
+.nav-cta:hover { box-shadow: 0 0 44px rgba(0,195,255,0.55); transform: translateY(-1px); color: #fff !important; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 120px 52px 80px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,153,255,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(0,153,255,0.04) 1px,transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%,black 25%,transparent 100%);
+}
+.orb1 { position: absolute; top:10%; left:-8%; width:700px; height:700px; background:radial-gradient(circle,rgba(0,80,180,0.08) 0%,transparent 60%); pointer-events:none; }
+.orb2 { position: absolute; bottom:-15%; right:-8%; width:560px; height:560px; background:radial-gradient(circle,rgba(0,195,255,0.06) 0%,transparent 60%); pointer-events:none; }
+.scan-line {
+  position: absolute; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,rgba(0,195,255,0.25),transparent);
+  animation: scan 9s ease-in-out infinite; top:30%;
+}
+@keyframes scan { 0%,100%{top:15%;opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{top:85%;opacity:0} }
+
+.hero-inner {
+  max-width: 1200px; width: 100%; margin: 0 auto; position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--orb); font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue2); padding: 7px 16px;
+  border: 1px solid rgba(0,195,255,0.28); background: rgba(0,195,255,0.05); margin-bottom: 26px;
+}
+.hero-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--blue2); box-shadow:0 0 8px var(--blue2); animation:pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.35} }
+
+.hero-h1 {
+  font-family: var(--orb); font-size: clamp(48px,5.8vw,82px); font-weight: 900;
+  line-height: 0.95; letter-spacing: -1px; color: var(--chrome2);
+  text-shadow: 0 0 50px rgba(0,153,255,0.18); margin-bottom: 6px;
+}
+.hero-h1-accent {
+  font-family: var(--orb); font-size: clamp(22px,2.8vw,38px); font-weight: 700;
+  color: var(--blue2); letter-spacing: 2px;
+  text-shadow: 0 0 30px rgba(0,195,255,0.55); margin-bottom: 28px;
+}
+.hero-desc { font-size: 15px; line-height: 1.85; color: var(--muted); margin-bottom: 44px; max-width: 460px; }
+.hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.btn-main {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--orb); font-size: 11px; font-weight: 700;
+  padding: 14px 30px; background: linear-gradient(135deg,var(--blue),var(--blue2));
+  color: #fff; text-decoration: none; letter-spacing: 1.5px; text-transform: uppercase;
+  transition: all 0.25s; border: none; cursor: pointer;
+  clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  box-shadow: 0 4px 30px rgba(0,153,255,0.32);
+}
+.btn-main:hover { box-shadow: 0 6px 44px rgba(0,195,255,0.52); transform: translateY(-2px); }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--orb); font-size: 11px; font-weight: 600;
+  padding: 13px 26px; border: 1px solid var(--bhi);
+  color: var(--muted); text-decoration: none; letter-spacing: 1.5px; text-transform: uppercase;
+  transition: all 0.2s; background: transparent; cursor: pointer;
+}
+.btn-outline:hover { border-color: rgba(0,195,255,0.42); color: var(--text); }
+.btn-main svg, .btn-outline svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; }
+
+/* TERMINAL */
+.hero-term {
+  background: var(--surface); border: 1px solid var(--bhi);
+  box-shadow: 0 0 60px rgba(0,100,200,0.12), inset 0 1px 0 rgba(0,195,255,0.08);
+}
+.term-bar { display:flex; align-items:center; gap:6px; padding:11px 16px; background:var(--surface2); border-bottom:1px solid var(--border); }
+.td { width:10px; height:10px; border-radius:50%; }
+.td.r{background:#ff5f57}.td.y{background:#febc2e}.td.g{background:#28c840}
+.term-lbl { font-family:var(--orb); font-size:10px; color:var(--muted2); margin-left:8px; letter-spacing:1px; }
+.term-body { padding:22px 24px; font-family:'Courier New',monospace; font-size:12px; line-height:2.1; }
+.tl { display:flex; gap:10px; }
+.tp { color:var(--blue2); flex-shrink:0; }
+.tc { color:var(--chrome2); }
+.to { color:var(--muted); padding-left:20px; }
+.tg { color:var(--green); }
+.tb { color:var(--blue2); }
+.ty { color:var(--yellow); }
+.cur { display:inline-block; width:8px; height:13px; background:var(--blue2); vertical-align:-2px; animation:blink 1s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* STATS */
+.stats-strip { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg2); display:flex; }
+.st { flex:1; padding:30px 28px; border-right:1px solid var(--border); position:relative; overflow:hidden; }
+.st:last-child { border-right:none; }
+.st::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent); opacity:0; transition:opacity 0.3s; }
+.st:hover::after { opacity:1; }
+.sn { font-family:var(--orb); font-size:40px; font-weight:900; color:var(--chrome2); letter-spacing:-1px; line-height:1; margin-bottom:8px; text-shadow:0 0 20px rgba(0,153,255,0.25); }
+.sn b { color:var(--blue2); }
+.sl { font-size:11px; font-weight:500; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+
+/* SECTIONS */
+section { padding:100px 52px; max-width:1200px; margin:0 auto; }
+.sec-over { font-family:var(--orb); font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--blue2); margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+.sec-over::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--bhi),transparent); max-width:80px; }
+.sec-h2 { font-family:var(--orb); font-size:clamp(32px,3.5vw,52px); font-weight:800; letter-spacing:-0.5px; color:var(--chrome2); line-height:1.1; margin-bottom:18px; }
+.sec-p { font-size:15px; line-height:1.85; color:var(--muted); max-width:540px; margin-bottom:56px; }
+
+/* FEATURES */
+#features { padding-top:0; }
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); }
+.fc { background:var(--bg); padding:36px 30px; transition:background 0.3s; position:relative; overflow:hidden; }
+.fc::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--blue),var(--blue2)); transform:scaleX(0); transform-origin:left; transition:transform 0.35s; }
+.fc:hover { background:var(--bg2); }
+.fc:hover::before { transform:scaleX(1); }
+.fi { width:48px; height:48px; background:rgba(0,153,255,0.07); border:1px solid rgba(0,153,255,0.2); display:flex; align-items:center; justify-content:center; margin-bottom:22px; }
+.fi svg { width:22px; height:22px; stroke:var(--blue2); fill:none; stroke-width:1.5; }
+.ft { font-family:var(--orb); font-size:13px; font-weight:700; color:var(--chrome2); margin-bottom:11px; letter-spacing:0.5px; }
+.fd { font-size:13px; line-height:1.85; color:var(--muted); }
+
+/* INSTALL */
+#install { padding-top:0; }
+.inst-grid { display:grid; grid-template-columns:1fr 1fr; gap:52px; align-items:start; }
+.steps { display:flex; flex-direction:column; }
+.step { display:flex; gap:20px; position:relative; }
+.step:not(:last-child)::after { content:''; position:absolute; left:18px; top:38px; bottom:-20px; width:1px; background:linear-gradient(180deg,var(--bhi),transparent); }
+.snum { flex-shrink:0; width:38px; height:38px; border:1px solid rgba(0,153,255,0.3); background:rgba(0,153,255,0.06); display:flex; align-items:center; justify-content:center; font-family:var(--orb); font-size:11px; font-weight:700; color:var(--blue2); z-index:1; }
+.sc { padding-bottom:34px; flex:1; }
+.stt { font-family:var(--orb); font-size:13px; font-weight:700; color:var(--chrome2); margin-bottom:8px; letter-spacing:0.5px; }
+.sd { font-size:13px; line-height:1.85; color:var(--muted); }
+.code-blk { background:var(--surface); border:1px solid var(--bhi); padding:16px 20px; margin-top:12px; position:relative; }
+.code-blk code { font-family:'Courier New',monospace; font-size:12px; color:var(--blue2); line-height:2; word-break:break-all; }
+.code-blk::after { content:'LUA'; position:absolute; top:8px; right:12px; font-family:var(--orb); font-size:8px; color:var(--muted2); letter-spacing:2px; }
+
+.inst-side { background:var(--surface); border:1px solid var(--bhi); padding:32px; position:sticky; top:80px; box-shadow:0 0 40px rgba(0,100,200,0.08); }
+.side-t { font-family:var(--orb); font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--blue2); margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+.req-list { list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
+.req-item { display:flex; align-items:flex-start; gap:10px; font-size:13px; line-height:1.75; color:var(--muted); }
+.req-item::before { content:''; flex-shrink:0; width:5px; height:5px; background:var(--blue2); border-radius:50%; margin-top:7px; box-shadow:0 0 6px var(--blue2); }
+.warn { background:rgba(0,153,255,0.04); border:1px solid rgba(0,153,255,0.2); padding:14px 18px; display:flex; gap:12px; }
+.warn svg { flex-shrink:0; width:15px; height:15px; stroke:var(--blue2); fill:none; stroke-width:2; margin-top:1px; }
+.warn p { font-size:12px; color:var(--blue2); line-height:1.8; opacity:0.85; }
+
+/* GATE */
+.gate { max-width:580px; margin:0 auto; background:var(--surface); border:1px solid var(--bhi); padding:52px 48px; text-align:center; position:relative; overflow:hidden; box-shadow:0 0 80px rgba(0,100,200,0.1); }
+.gate::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent); }
+.gate img { width:76px; height:76px; object-fit:contain; margin:0 auto 22px; display:block; filter:drop-shadow(0 0 16px rgba(0,153,255,0.6)); }
+.gate-t { font-family:var(--orb); font-size:22px; font-weight:800; color:var(--chrome2); margin-bottom:12px; }
+.gate-d { font-size:14px; line-height:1.8; color:var(--muted); margin-bottom:32px; }
+
+/* COMMUNITY */
+#community { padding-bottom:120px; }
+.comm-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); }
+.cc { background:var(--bg); padding:44px; display:flex; flex-direction:column; gap:20px; transition:background 0.3s; text-decoration:none; position:relative; overflow:hidden; }
+.cc::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent); opacity:0; transition:opacity 0.3s; }
+.cc:hover { background:var(--bg2); }
+.cc:hover::after { opacity:1; }
+.ch { display:flex; align-items:center; gap:16px; }
+.ci { width:54px; height:54px; border:1px solid var(--bhi); background:var(--surface); display:flex; align-items:center; justify-content:center; }
+.cn { font-family:var(--orb); font-size:18px; font-weight:800; color:var(--chrome2); }
+.cs { font-size:12px; color:var(--muted); margin-top:2px; font-family:'Courier New',monospace; }
+.cd { font-size:13px; line-height:1.85; color:var(--muted); }
+.cf { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+.ccta { font-family:var(--orb); font-size:10px; color:var(--blue2); letter-spacing:2px; text-transform:uppercase; }
+.carr { width:34px; height:34px; border:1px solid var(--bhi); display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+.carr svg { width:14px; height:14px; stroke:var(--muted); fill:none; stroke-width:2; transition:stroke 0.2s; }
+.cc:hover .carr { background:linear-gradient(135deg,var(--blue),var(--blue2)); border-color:transparent; box-shadow:0 0 20px rgba(0,153,255,0.4); }
+.cc:hover .carr svg { stroke:#fff; }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:36px 52px; display:flex; align-items:center; justify-content:space-between; background:var(--bg2); }
+.fl { display:flex; align-items:center; gap:10px; }
+.fl img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(0,153,255,0.5)); }
+.flb { font-family:var(--orb); font-size:13px; font-weight:700; color:var(--chrome2); }
+.flinks { display:flex; gap:28px; list-style:none; }
+.flinks a { font-size:12px; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.flinks a:hover { color:var(--text); }
+.fc2 { font-family:'Courier New',monospace; font-size:11px; color:var(--muted2); }
+
+/* ANIM */
+.fu { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease,transform 0.65s ease; }
+.fu.d1 { transition-delay:0.12s; }
+.fu.d2 { transition-delay:0.22s; }
+.fu.vis { opacity:1; transform:translateY(0); }
+
+@media(max-width:960px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hero{padding:100px 20px 60px;}
+  .hero-inner{grid-template-columns:1fr;gap:48px;}
+  .hero-term{display:none;}
+  .stats-strip{flex-wrap:wrap;}
+  .st{min-width:50%;border-bottom:1px solid var(--border);}
+  section{padding:60px 20px;}
+  .feat-grid{grid-template-columns:1fr;}
+  .inst-grid{grid-template-columns:1fr;}
+  .comm-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:20px;text-align:center;padding:28px 20px;}
+}
+</style>
 </head>
 <body>
-  <h1>Home Page</h1>
-  <p>This is the main index.html</p>
-  <a href="/login">Go to Login</a><br>
-  <a href="/dashboard">Go to Dashboard</a>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/logo.png" alt="VH">
+    <span class="nav-brand">Vertic<b>Hub</b></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Fitur</a></li>
+    <li><a href="#install">Cara Pasang</a></li>
+    <li><a href="#community">Komunitas</a></li>
+    <li><a href="/getkey/" class="nav-cta">Get Key</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="orb1"></div><div class="orb2"></div><div class="scan-line"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">Roblox Script — Free Access</div>
+      <h1 class="hero-h1">VERTIC</h1>
+      <div class="hero-h1-accent">HUB SYSTEM</div>
+      <p class="hero-desc">Script Roblox berkualitas tinggi dengan sistem key yang aman. Auto-detect HWID, binding device, username lock, dan expire otomatis 24 jam. Gratis selamanya.</p>
+      <div class="hero-btns">
+        <a href="/getkey/" class="btn-main">
+          <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          Ambil Key
+        </a>
+        <a href="#install" class="btn-outline">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Cara Pasang
+        </a>
+      </div>
+    </div>
+    <div class="hero-term">
+      <div class="term-bar">
+        <div class="td r"></div><div class="td y"></div><div class="td g"></div>
+        <span class="term-lbl">key_checker.lua</span>
+      </div>
+      <div class="term-body">
+        <div class="tl"><span class="tp">$</span><span class="tc">loadstring(game:HttpGet(API_URL))()</span></div>
+        <div class="to">Loading VertictHub Key System v2.1...</div>
+        <div class="to tg">-- Checking saved key...</div>
+        <div class="to">Fetching HWID...<span class="ty"> 1A2B3C-4D5E6F</span></div>
+        <div class="to">Validating username...<span class="ty"> PlayerXYZ</span></div>
+        <br>
+        <div class="tl"><span class="tp">$</span><span class="tc">checkKeyAPI(key, hwid)</span></div>
+        <div class="to tb">POST /api/checkkey  200 OK</div>
+        <div class="to">Username match:<span class="tg"> true</span></div>
+        <div class="to tg">Key valid. Binding HWID to device...</div>
+        <div class="to tg">Bound: true | Expires: 24h</div>
+        <br>
+        <div class="tl"><span class="tp">$</span><span class="tc">-- Script executing<span class="cur"></span></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats-strip">
+  <div class="st"><div class="sn">24<b>H</b></div><div class="sl">Key Duration</div></div>
+  <div class="st"><div class="sn">1<b>:1</b></div><div class="sl">HWID Binding</div></div>
+  <div class="st"><div class="sn">0<b>MS</b></div><div class="sl">Delay Eksekusi</div></div>
+  <div class="st"><div class="sn">100<b>%</b></div><div class="sl">Free Access</div></div>
+</div>
+
+<section id="features">
+  <div class="fu">
+    <div class="sec-over">Fitur Sistem</div>
+    <h2 class="sec-h2">Keamanan &<br>Performa Penuh.</h2>
+    <p class="sec-p">Sistem key yang memastikan hanya pengguna sah yang bisa menjalankan script. Anti-bypass, anti-share.</p>
+  </div>
+  <div class="feat-grid fu d1">
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="ft">HWID Binding</div><div class="fd">Setiap key terikat ke hardware ID device kamu. Satu key, satu device. Tidak bisa dipakai di device lain kecuali admin reset HWID.</div></div>
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="ft">Auto Expire 24H</div><div class="fd">Key otomatis kadaluarsa setelah 24 jam. Gratis ambil key baru setiap hari. Tidak perlu bayar apapun, selamanya gratis.</div></div>
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="ft">Username Lock</div><div class="fd">Key terkunci ke username Roblox. Username berbeda saat verifikasi akan ditolak otomatis. Anti-sharing yang efektif.</div></div>
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ft">Signed Token</div><div class="fd">Request key dari script Roblox menggunakan HMAC signed token berlaku 5 menit. Anti-bypass dan anti-manipulasi HWID sepenuhnya.</div></div>
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="ft">Rate Limiting</div><div class="fd">Anti-spam dengan rate limiter 5 request/menit per HWID dan IP. Mencegah abuse sistem key secara masif dari pihak manapun.</div></div>
+    <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><div class="ft">Admin Dashboard</div><div class="fd">Panel admin lengkap. Monitor key, blacklist HWID, reset device, extend key, atur limit harian, dan log aktivitas real-time.</div></div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="fu">
+    <div class="sec-over">Cara Pasang</div>
+    <h2 class="sec-h2">Setup dalam<br>hitungan menit.</h2>
+  </div>
+  <div class="inst-grid fu d1">
+    <div class="steps">
+      <div class="step"><div class="snum">01</div><div class="sc"><div class="stt">Join Discord VertictHub</div><div class="sd">Script hanya tersedia di server Discord kami. Join terlebih dahulu untuk mendapatkan akses ke file script terbaru.</div></div></div>
+      <div class="step"><div class="snum">02</div><div class="sc"><div class="stt">Ambil Key di Website</div><div class="sd">Kunjungi halaman Get Key, masukkan username Roblox. Key berlaku 24 jam dan terikat ke device serta username kamu.</div></div></div>
+      <div class="step"><div class="snum">03</div><div class="sc"><div class="stt">Paste key_checker.lua di Paling Atas</div><div class="sd">Paste seluruh isi <code style="font-family:'Courier New';color:var(--blue2);font-size:12px">key_checker.lua</code> di bagian paling atas script, sebelum semua kode lain.</div><div class="code-blk"><code>-- WAJIB di paling atas script<br>-- Sebelum semua kode lain<br><br>local API = "https://vh.vercel.app"<br>-- paste key_checker.lua di sini...</code></div></div></div>
+      <div class="step"><div class="snum">04</div><div class="sc"><div class="stt">Jalankan di Executor</div><div class="sd">Execute script seperti biasa. GUI verifikasi muncul otomatis. Masukkan key dan tekan Verifikasi untuk melanjutkan.</div></div></div>
+    </div>
+    <div class="inst-side">
+      <div class="side-t">Persyaratan</div>
+      <ul class="req-list">
+        <li class="req-item">Executor Roblox yang mendukung HTTP Request (Synapse, KRNL, Fluxus, dll)</li>
+        <li class="req-item">Username Roblox aktif yang sama dengan saat ambil key di website</li>
+        <li class="req-item">Koneksi internet stabil untuk validasi key ke server setiap sesi</li>
+        <li class="req-item">Key valid yang belum expired — ambil baru gratis setiap 24 jam</li>
+      </ul>
+      <div class="warn">
+        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>Jangan share key kamu. Key terikat ke HWID dan username Roblox kamu secara eksklusif.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="fu">
+    <div class="sec-over">Script</div>
+    <h2 class="sec-h2">Mau akses<br>scriptnya?</h2>
+  </div>
+  <div class="gate fu d1">
+    <img src="/logo.png" alt="VH">
+    <div class="gate-t">Script Ada di Discord</div>
+    <div class="gate-d">Script VertictHub eksklusif tersedia di server Discord.<br>Join dulu, lalu akses channel #script untuk file terbaru.</div>
+    <a href="https://discord.gg/fVVZWMwmKG" target="_blank" class="btn-main" style="display:inline-flex;margin:0 auto">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" width="14" height="14"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.043.036.055a19.942 19.942 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Join Discord
+    </a>
+  </div>
+</section>
+
+<section id="community">
+  <div class="fu">
+    <div class="sec-over">Komunitas</div>
+    <h2 class="sec-h2">Temukan kami.</h2>
+  </div>
+  <div class="comm-grid fu d1">
+    <a class="cc" href="https://discord.gg/fVVZWMwmKG" target="_blank">
+      <div class="ch">
+        <div class="ci"><svg width="24" height="24" viewBox="0 0 24 24" fill="#5865F2" stroke="none"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.043.036.055a19.942 19.942 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+        <div><div class="cn">Discord</div><div class="cs">discord.gg/fVVZWMwmKG</div></div>
+      </div>
+      <div class="cd">Server utama VertictHub. Script terbaru, support teknis, update fitur, dan komunitas aktif. Wajib join untuk akses script.</div>
+      <div class="cf"><div class="ccta">Join Server</div><div class="carr"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    </a>
+    <a class="cc" href="https://www.tiktok.com/@vhcomunity" target="_blank">
+      <div class="ch">
+        <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.22 8.22 0 0 0 4.78 1.52V6.79a4.85 4.85 0 0 1-1.01-.1z"/></svg></div>
+        <div><div class="cn">TikTok</div><div class="cs">@vhcomunity</div></div>
+      </div>
+      <div class="cd">Follow TikTok kami untuk update terbaru, showcase fitur, tutorial, dan konten seputar Roblox scripting.</div>
+      <div class="cf"><div class="ccta">Follow Sekarang</div><div class="carr"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="fl"><img src="/logo.png" alt="VH"><span class="flb">VertictHub</span></div>
+  <ul class="flinks">
+    <li><a href="/getkey/">Get Key</a></li>
+    <li><a href="https://discord.gg/fVVZWMwmKG" target="_blank">Discord</a></li>
+    <li><a href="https://www.tiktok.com/@vhcomunity" target="_blank">TikTok</a></li>
+    <li><a href="/dashboard/">Admin</a></li>
+  </ul>
+  <div class="fc2">VH &copy; 2025</div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('vis'); }), {threshold:0.1});
+document.querySelectorAll('.fu').forEach(el => { obs.observe(el); if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('vis'); });
+</script>
 </body>
 </html>
