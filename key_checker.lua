@@ -6,7 +6,7 @@ local Players     = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
-local API_BASE  = "https://vh-api-alpha.vercel.app" -- ganti URL Vercel kamu
+local API_BASE  = "https://tes-nine-theta.vercel.app/" -- ganti URL Vercel kamu
 local KEY_FILE  = "vh_key.txt"
 local RETRY_MAX = 3     -- [NEW] max retry kalau koneksi gagal
 local TIMEOUT   = 10    -- [NEW] timeout detik untuk polling
