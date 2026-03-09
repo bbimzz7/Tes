@@ -1,4 +1,12 @@
-
 {
-  "cleanUrls": true
+  "rewrites": [
+    { "source": "/getkey", "destination": "/getkey/index.html" },
+    { "source": "/getkey/", "destination": "/getkey/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
+    { "source": "/dashboard/", "destination": "/dashboard/index.html" },
+    { "source": "/api/getkey", "destination": "/api/getkey.js" },
+    { "source": "/api/checkkey", "destination": "/api/checkkey.js" },
+    { "source": "/api/token", "destination": "/api/token.js" },
+    { "source": "/api/dashboard", "destination": "/api/dashboard.js" }
+  ]
 }
