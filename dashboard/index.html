@@ -3,760 +3,647 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — VertictHub</title>
+<title>Admin — VertictHub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#020810;--bg2:#050d1a;--surface:#0a1628;--surface2:#0d1d35;
-  --border:rgba(0,160,255,0.1);--bhi:rgba(0,160,255,0.22);
-  --blue:#0099ff;--blue2:#00c3ff;--chrome:#c8d8e8;--chrome2:#e8f2ff;
-  --text:#cce0f5;--muted:#4a6080;--muted2:#2a3a50;
-  --green:#00e5a0;--red:#ff3a5c;--yellow:#ffb800;
-  --orb:'Orbitron',monospace;--body:'Inter',sans-serif;
+  --bg:#08090c;--s1:#0d0f14;--s2:#121520;--s3:#181c25;
+  --ln:rgba(255,255,255,0.06);--ln2:rgba(255,255,255,0.10);--ln3:rgba(59,107,255,0.25);
+  --blue:#3b6bff;--blu2:#2952e3;--blu3:#5c85ff;--bluA:rgba(59,107,255,.12);
+  --t:#f0f2f8;--t2:#8a8fa8;--t3:#4a4f62;
+  --g:#00d97e;--r:#ff4d6a;--y:#ffb020;
+  --fD:'Syne',sans-serif;--fM:'JetBrains Mono',monospace;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.4;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")}
+html,body{min-height:100vh}
+body{background:var(--bg);color:var(--t);font-family:var(--fH);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(59,107,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,107,255,0.04) 1px,transparent 1px);background-size:64px 64px}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,8,16,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo img{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 0 7px rgba(0,153,255,0.6))}
-.nav-brand{font-family:var(--orb);font-size:13px;font-weight:700;letter-spacing:1px;color:var(--chrome2);text-shadow:0 0 18px rgba(0,153,255,0.35)}
-.nav-brand b{color:var(--blue2);font-weight:900}
-.nav-right{display:flex;align-items:center;gap:14px;font-family:var(--orb);font-size:10px}
-.nav-stat{display:flex;align-items:center;gap:6px;color:var(--muted)}
-.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2)}
-.nav-stat.online .nav-dot{background:var(--green);box-shadow:0 0 6px var(--green)}
-.nav-btn{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--orb);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;gap:6px}
-.nav-btn:hover{color:var(--text);border-color:var(--bhi)}
-.nav-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(8,9,12,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--ln2);padding:0 48px}
+.ni{max-width:1440px;margin:0 auto;height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-icon{width:32px;height:32px;border-radius:7px;overflow:hidden;flex-shrink:0}
+.logo-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.logo-text{font-family:var(--fH);font-size:15px;font-weight:800;color:var(--t)}.logo-text span{color:var(--blue3)}
+.nbadge{font-family:var(--fM);font-size:10px;background:var(--bluA);border:1px solid var(--ln2);color:var(--blue);padding:3px 10px;border-radius:20px;letter-spacing:1.5px}
+.nright{display:flex;align-items:center;gap:16px}
+.nright a,.nright button{font-size:12px;font-weight:500;color:var(--t2);text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--fH);transition:color .15s;padding:5px 10px;border-radius:6px}
+.nright a:hover,.nright button:hover{color:var(--t);background:var(--ln)}
+#nLogout{color:var(--r)!important;display:none}
 
-/* LOGIN */
-#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px 40px;position:relative;overflow:hidden}
-#loginPage::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,153,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,153,255,0.025) 1px,transparent 1px);background-size:48px 48px}
-.login-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,80,180,0.08) 0%,transparent 60%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.page{position:relative;z-index:1;min-height:100vh;padding-top:58px}
 
-.login-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--bhi);position:relative;overflow:hidden;z-index:1;box-shadow:0 0 80px rgba(0,100,200,0.12)}
-.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent)}
+#pLogin{display:flex;align-items:center;justify-content:center;padding:60px 24px;min-height:100vh}
+.lw{width:100%;max-width:360px}
+.lhead{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--ln2)}
+.ltag{font-family:var(--fM);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ltag::before{content:'';width:18px;height:2px;background:var(--blue);border-radius:2px}
+.ltitle{font-size:46px;font-weight:800;letter-spacing:0px;text-transform:uppercase;line-height:.9;color:var(--t)}
+.lsub{font-size:12px;color:var(--t2);margin-top:7px}
 
-.login-top{padding:36px 32px 28px;border-bottom:1px solid var(--border);text-align:center}
-.login-logo{width:72px;height:72px;object-fit:contain;margin:0 auto 16px;display:block;filter:drop-shadow(0 0 16px rgba(0,153,255,0.6))}
-.login-tag{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px}
-.login-title{font-family:var(--orb);font-size:26px;font-weight:900;color:var(--chrome2);letter-spacing:-0.5px}
-.login-title span{color:var(--blue2)}
+.card{background:var(--s1);border:1px solid var(--ln2);border-radius:12px;padding:22px;position:relative;overflow:hidden;margin-bottom:10px}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.4;width:unset}
+.flabel{font-family:var(--fM);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:block}
+.ifield{width:100%;padding:11px 13px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:8px;color:var(--t);font-family:var(--fH);font-size:14px;font-weight:500;outline:none;transition:border-color .15s,box-shadow .15s}
+.ifield:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,84,255,.1)}
+.ifield::placeholder{color:var(--t3)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:999px;border:none;font-family:var(--fH);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 20px rgba(59,107,255,.35);border-radius:999px}
+.btn-blue:hover:not(:disabled){background:var(--blu2);box-shadow:0 6px 30px rgba(59,107,255,.45)}
+.btn-out{background:transparent;color:var(--t2);border:1px solid var(--ln2)}
+.btn-out:hover:not(:disabled){color:var(--t);border-color:var(--ln3)}
+.stat{font-family:var(--fM);font-size:11px;text-align:center;margin-top:10px;min-height:16px}
+.stat.e{color:var(--r)}.stat.o{color:var(--g)}.stat.l{color:var(--blue)}
 
-.login-body{padding:28px 32px}
-.f-lbl{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px}
-.f-inp{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:13px;outline:none;transition:border-color 0.2s;margin-bottom:0}
-.f-inp:focus{border-color:rgba(0,195,255,0.45);box-shadow:0 0 0 3px rgba(0,153,255,0.06)}
-.field{margin-bottom:18px}
+/* DASHBOARD */
+#pDash{display:none;padding:16px 48px 48px}
+.dtop{max-width:1440px;margin:0 auto}
 
-.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;font-family:var(--orb);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 30px rgba(0,153,255,0.25)}
-.btn-login:hover:not(:disabled){box-shadow:0 6px 44px rgba(0,195,255,0.45);transform:translateY(-1px)}
-.btn-login:disabled{opacity:0.4;cursor:not-allowed;transform:none}
-.login-st{margin-top:14px;font-family:'Courier New',monospace;font-size:11px;min-height:18px;text-align:center}
-.login-st.err{color:var(--red)}
-.login-st.ok{color:var(--green)}
+/* STATS CARDS */
+.sc-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.sc{background:var(--s1);border:1px solid var(--ln2);border-radius:10px;padding:16px 18px}
+.sc-val{font-family:var(--fH);font-size:28px;font-weight:800;color:var(--t);line-height:1;letter-spacing:-0.5px}
+.sc-val.blue{color:var(--blue)}.sc-val.green{color:var(--g)}.sc-val.red{color:var(--r)}.sc-val.yellow{color:var(--y)}
+.sc-lbl{font-family:var(--fM);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:4px}
 
-.login-foot{padding:18px 32px;border-top:1px solid var(--border);font-size:11px;color:var(--muted2);text-align:center}
-.login-foot a{color:var(--muted);text-decoration:none;transition:color 0.2s}
-.login-foot a:hover{color:var(--text)}
-
-/* DASH */
-#dashPage{display:none;padding-top:58px;min-height:100vh}
-.dash-wrap{display:flex;min-height:calc(100vh - 58px)}
-
-/* SIDEBAR */
-.sidebar{width:216px;flex-shrink:0;border-right:1px solid var(--border);background:var(--bg2);padding:20px 0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto}
-.sb-sec{padding:0 14px;margin-bottom:20px}
-.sb-lbl{font-family:var(--orb);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);padding:0 8px;margin-bottom:8px}
-.sb-link{display:flex;align-items:center;gap:10px;padding:9px 12px;font-family:var(--orb);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border:1px solid transparent;background:transparent;width:100%;text-align:left;transition:all 0.15s;text-decoration:none}
-.sb-link:hover{color:var(--text);background:rgba(0,153,255,0.04)}
-.sb-link.active{color:var(--blue2);background:rgba(0,153,255,0.07);border-color:rgba(0,153,255,0.2)}
-.sb-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
-
-/* MAIN */
-.dash-main{flex:1;overflow:hidden}
-
-.dash-topbar{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.tb-t{font-family:var(--orb);font-size:18px;font-weight:800;color:var(--chrome2);letter-spacing:-0.5px}
-.tb-s{font-family:'Courier New',monospace;font-size:10px;color:var(--muted2);margin-top:2px}
-.tb-acts{display:flex;gap:8px}
-
-.btn-sm{padding:7px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--orb);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
-.btn-sm:hover{color:var(--text);border-color:var(--bhi)}
-.btn-sm.pr{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;box-shadow:0 2px 14px rgba(0,153,255,0.25)}
-.btn-sm.pr:hover{box-shadow:0 4px 24px rgba(0,195,255,0.4)}
-.btn-sm.da{border-color:rgba(255,58,92,0.3);color:var(--red)}
-.btn-sm.da:hover{background:rgba(255,58,92,0.07)}
-.btn-sm svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
-
-.content{padding:22px 28px}
-.tab-c{display:none}.tab-c.active{display:block}
-
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:22px}
-.sc{background:var(--bg2);padding:18px 18px;transition:background 0.2s;position:relative;overflow:hidden}
-.sc:hover{background:var(--surface)}
-.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent);opacity:0;transition:opacity 0.3s}
-.sc:hover::after{opacity:1}
-.sc-n{font-family:var(--orb);font-size:28px;font-weight:900;color:var(--c,var(--blue2));line-height:1;margin-bottom:6px;text-shadow:0 0 16px rgba(0,153,255,0.2)}
-.sc-l{font-family:var(--orb);font-size:8px;color:var(--muted2);text-transform:uppercase;letter-spacing:2px}
+/* TABS */
+.tabs-row{display:flex;align-items:center;gap:2px;margin-bottom:14px;background:var(--s1);border:1px solid var(--ln2);border-radius:10px;padding:5px;width:fit-content}
+.tab{padding:7px 16px;border:none;background:transparent;color:var(--t2);font-family:var(--fH);font-size:12px;font-weight:600;cursor:pointer;border-radius:7px;transition:all .15s}
+.tab.on{background:var(--blue);color:#fff}
+.tab:not(.on):hover{color:var(--t);background:var(--s2)}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
-.s-inp{flex:1;min-width:180px;padding:9px 14px;background:var(--surface);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:12px;outline:none;transition:border-color 0.2s}
-.s-inp:focus{border-color:rgba(0,195,255,0.35)}
-.s-inp::placeholder{color:var(--muted2)}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.toolbar input{padding:8px 12px;background:var(--s1);border:1px solid var(--ln2);border-radius:8px;color:var(--t);font-family:var(--fH);font-size:13px;font-weight:500;outline:none;width:220px;transition:border-color .15s}
+.toolbar input:focus{border-color:var(--blue)}
+.toolbar input::placeholder{color:var(--t3)}
+.tb-sel{padding:7px 12px;background:var(--s1);border:1px solid var(--ln2);border-radius:8px;color:var(--t);font-size:12px;font-family:var(--fH);cursor:pointer;outline:none}
+.ab{background:transparent;border:1px solid var(--ln2);color:var(--t2);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--fM);transition:all .15s;white-space:nowrap}
+.ab:hover{color:var(--t);border-color:var(--ln3)}
+.ab.del{color:var(--r);border-color:rgba(232,52,74,.25)}
+.ab.del:hover{background:rgba(232,52,74,.06)}
+.ab.ok{color:var(--g);border-color:rgba(13,186,111,.3)}
+.ml-auto{margin-left:auto}
+.sep{width:1px;height:20px;background:var(--ln2)}
 
-.pills{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
-.pill{padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--orb);font-size:9px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s;text-transform:uppercase}
-.pill.active{border-color:rgba(0,195,255,0.35);background:rgba(0,153,255,0.07);color:var(--blue2)}
-.pill:hover:not(.active){color:var(--text);border-color:var(--bhi)}
+/* SELECTION BAR */
+.sel-bar{display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--bluA);border:1px solid var(--ln2);border-radius:8px;margin-bottom:10px}
+.sel-bar.on{display:flex}
+.sel-count{font-size:12px;font-weight:600;color:var(--blue)}
+.sel-btn{padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--fH);transition:all .15s}
+.sel-btn-del{background:rgba(232,52,74,.1);color:var(--r);border:1px solid rgba(232,52,74,.25)}
+.sel-btn-del:hover{background:rgba(232,52,74,.18)}
+.sel-btn-clear{background:transparent;color:var(--t3);border:1px solid var(--ln2)}
+.sel-btn-clear:hover{color:var(--t2)}
 
 /* TABLE */
-.tw{border:1px solid var(--border);overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-thead tr{background:var(--surface2);border-bottom:1px solid var(--border)}
-th{padding:10px 13px;text-align:left;font-family:var(--orb);font-size:8px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:2px;white-space:nowrap;cursor:pointer;transition:color 0.2s;user-select:none}
-th:hover{color:var(--muted)}
-th.sorted{color:var(--blue2)}
-td{padding:10px 13px;border-bottom:1px solid rgba(0,160,255,0.05);vertical-align:middle;font-family:'Courier New',monospace;font-size:11px}
-tbody tr{transition:background 0.12s;cursor:pointer}
-tbody tr:hover{background:rgba(0,153,255,0.04)}
-tbody tr:last-child td{border-bottom:none}
+.tw{overflow-x:auto}
+.tw table{width:100%;border-collapse:collapse;font-size:12px}
+.tw th{background:var(--s2);padding:10px 12px;text-align:left;font-family:var(--fM);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--ln2);cursor:pointer;white-space:nowrap;user-select:none}
+.tw th:hover{color:var(--t2)}.tw th:first-child{width:36px;cursor:default}
+.si{color:var(--t3);font-size:9px}
+.tw td{padding:10px 12px;border-bottom:1px solid var(--ln);vertical-align:middle}
+.tw tr:last-child td{border-bottom:none}
+.tw tr:hover td{background:var(--s2)}
+.tw tr.selected td{background:rgba(41,84,255,.05)}
+.tw tr td:first-child{padding:10px 8px}
+.cb{width:14px;height:14px;accent-color:var(--blue);cursor:pointer}
+.empty{text-align:center;padding:40px;color:var(--t3);font-family:var(--fM);font-size:12px}
 
-.badge{display:inline-block;padding:2px 8px;font-family:var(--orb);font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.b-g{background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.25)}
-.b-r{background:rgba(255,58,92,0.1);color:var(--red);border:1px solid rgba(255,58,92,0.2)}
-.b-m{background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border)}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-family:var(--fM);font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.badge-ok{background:rgba(13,186,111,.1);color:var(--g);border:1px solid rgba(13,186,111,.2)}
+.badge-err{background:rgba(232,52,74,.08);color:var(--r);border:1px solid rgba(232,52,74,.2)}
+.badge-blue{background:var(--bluA);color:var(--blue);border:1px solid var(--ln2)}
+.badge-gray{background:var(--s3);color:var(--t3);border:1px solid var(--ln)}
 
-.act-btn{padding:3px 8px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:var(--orb);font-size:8px;font-weight:600;cursor:pointer;transition:all 0.15s;margin:0 1px;letter-spacing:0.5px}
-.act-btn:hover{color:var(--text);border-color:var(--bhi)}
-.act-btn.del:hover{color:var(--red);border-color:rgba(255,58,92,0.4)}
-.act-btn.ext:hover{color:var(--yellow);border-color:rgba(255,184,0,0.4)}
-.act-btn.rst:hover{color:var(--blue2);border-color:rgba(0,195,255,0.4)}
+/* CONTENT PANELS */
+#t-keys,#t-blacklist,#t-logs,#t-chart,#t-settings{background:var(--s1);border:1px solid var(--ln2);border-radius:10px;padding:18px}
 
-.t-info{font-family:var(--orb);font-size:9px;color:var(--muted2);margin-top:8px;text-align:right;letter-spacing:1px}
-.empty-row{text-align:center;padding:40px;color:var(--muted2);font-family:var(--orb);font-size:10px;letter-spacing:2px}
-
-/* GEN FORM */
-.gen-form{background:var(--surface);border:1px solid var(--bhi);padding:18px 22px;margin-bottom:18px;display:none;animation:fadeIn 0.2s ease}
-.gen-form.open{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.gen-t{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--blue2);margin-bottom:14px}
-.gen-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.gen-f{flex:1;min-width:110px}
-.gen-f label{display:block;font-family:var(--orb);font-size:8px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.gen-f input{width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:12px;outline:none}
-.gen-f input:focus{border-color:rgba(0,195,255,0.4)}
-.gen-res{margin-top:12px;font-family:'Courier New',monospace;font-size:11px;line-height:1.9}
-
-/* LOGS */
-.log-list{display:flex;flex-direction:column;gap:6px}
-.log-item{background:var(--surface);border:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.log-ts{font-family:'Courier New',monospace;font-size:10px;color:var(--muted2);white-space:nowrap;flex-shrink:0}
-.log-ct{flex:1;font-family:'Courier New',monospace;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.log-tag{padding:2px 8px;font-family:var(--orb);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.lt-del{background:rgba(255,58,92,0.1);color:var(--red)}
-.lt-gen{background:rgba(0,229,160,0.1);color:var(--green)}
-.lt-ext{background:rgba(255,184,0,0.1);color:var(--yellow)}
-.lt-rst{background:rgba(0,195,255,0.1);color:var(--blue2)}
-.lt-blk{background:rgba(255,58,92,0.12);color:var(--red)}
-.lt-cfg{background:rgba(0,153,255,0.08);color:var(--blue2)}
-.lt-def{background:rgba(255,255,255,0.04);color:var(--muted2)}
-
-/* SETTINGS */
-.sb-blk{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:12px}
-.sb-t{font-family:var(--orb);font-size:10px;color:var(--blue2);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:700}
-.sb-d{font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:14px}
-.sb-in{width:100%;max-width:200px;padding:10px 14px;background:var(--bg2);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:13px;outline:none}
-.sb-in:focus{border-color:rgba(0,195,255,0.4)}
-
-/* BLACKLIST */
-.bl-f{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:22px}
-.bl-ft{font-family:var(--orb);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:14px}
-.bl-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-.bl-fd{flex:1;min-width:130px}
-.bl-fd label{display:block;font-family:var(--orb);font-size:8px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.bl-fd input{width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--bhi);color:var(--text);font-family:'Courier New',monospace;font-size:12px;outline:none}
+/* ACTION BUTTONS */
+.mac{display:flex;align-items:center;gap:8px;margin-top:12px}
 
 /* MODAL */
-.modal-ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
-.modal-ov.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--bhi);padding:28px;width:100%;max-width:380px;position:relative;overflow:hidden;animation:fadeIn 0.25s ease;box-shadow:0 0 60px rgba(0,100,200,0.15)}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),var(--blue2),transparent)}
-.modal-t{font-family:var(--orb);font-size:17px;font-weight:800;color:var(--chrome2);margin-bottom:6px}
-.modal-s{font-family:'Courier New',monospace;font-size:11px;color:var(--blue2);margin-bottom:18px;word-break:break-all}
-.modal-acts{display:flex;gap:8px;margin-top:18px}
-.modal-acts .btn-sm{flex:1;justify-content:center}
+.mb{position:fixed;inset:0;background:rgba(10,18,64,0.5);backdrop-filter:blur(4px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.mb.on{opacity:1;pointer-events:all}
+.mo{background:var(--s1);border:1px solid var(--ln2);border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(41,84,255,.15)}
+.mo h3{font-family:var(--fH);font-size:16px;font-weight:800;color:var(--t);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--ln)}
+.mo input,.mo textarea{width:100%;padding:9px 12px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:7px;color:var(--t);font-family:var(--fM);font-size:12px;outline:none;transition:border-color .15s;margin-bottom:8px}
+.mo input:focus,.mo textarea:focus{border-color:var(--blue)}
+.mo textarea{resize:none;height:64px}
 
-/* DETAIL MODAL */
-.dm-f{margin-bottom:12px}
-.dm-l{font-family:var(--orb);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}
-.dm-v{font-family:'Courier New',monospace;font-size:12px;color:var(--text);background:var(--bg2);border:1px solid var(--border);padding:9px 12px;word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.cp-in{flex-shrink:0;padding:2px 8px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:var(--orb);font-size:8px;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px}
-.cp-in:hover{color:var(--text)}
-.dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.dgi{background:var(--bg2);border:1px solid var(--border);padding:10px}
-.dgi-l{font-family:var(--orb);font-size:8px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.dgi-v{font-family:'Courier New',monospace;font-size:11px;color:var(--text)}
+/* LOGS */
+.li{padding:10px 14px;border-bottom:1px solid var(--ln);display:flex;align-items:flex-start;gap:10px}
+.li:last-child{border-bottom:none}
+.lts{font-family:var(--fM);font-size:10px;color:var(--t3);flex-shrink:0;margin-top:1px}
+.la{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lt{font-family:var(--fM);font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.lt-del{background:rgba(232,52,74,.1);color:var(--r)}.lt-gen{background:var(--bluA);color:var(--blue)}
+.lt-ext{background:rgba(13,186,111,.1);color:var(--g)}.lt-rst{background:rgba(232,160,32,.1);color:var(--y)}
+.lt-bl{background:rgba(232,52,74,.08);color:var(--r)}.lt-ubl{background:rgba(13,186,111,.08);color:var(--g)}
+.lt-def{background:var(--s3);color:var(--t3)}
 
-/* TOAST */
-#toast{position:fixed;bottom:22px;right:22px;z-index:300;font-family:'Courier New',monospace;font-size:12px;padding:12px 18px;border-left:3px solid var(--blue2);background:var(--surface);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:all 0.3s;max-width:300px;display:none}
-#toast.show{display:block;animation:fadeIn 0.2s ease}
-#toast.err{border-left-color:var(--red);color:var(--red)}
-#toast.ok{border-left-color:var(--green);color:var(--green)}
+/* CHART */
+.chart-wrap{height:200px;position:relative}
+canvas{width:100%!important}
 
-.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:sp 0.7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+/* SETTINGS */
+.cfg-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cfg-row label{font-size:13px;font-weight:500;color:var(--t);flex:1}
+.cfg-row input{width:90px;padding:8px 10px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:7px;color:var(--t);font-family:var(--fM);font-size:12px;outline:none;text-align:center}
+.cfg-row input:focus{border-color:var(--blue)}
+.cfg-hint{font-size:11px;color:var(--t3);margin-bottom:14px;font-family:var(--fM)}
 
-@media(max-width:900px){
-  nav{padding:0 14px}
-  .sidebar{display:none}
-  .content{padding:14px}
-  .stats-row{grid-template-columns:repeat(2,1fr)}
-  .dash-topbar{padding:14px}
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:0 16px}#pDash{padding:12px 16px 40px}
+  .sc-row{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav>
-  <a href="/" class="nav-logo">
-    <img src="/logo.png" alt="VH">
-    <span class="nav-brand">Vertic<b>Hub</b></span>
-  </a>
-  <div class="nav-right">
-    <div class="nav-stat" id="navStat">
-      <div class="nav-dot"></div><span>Offline</span>
+  <div class="ni">
+    <div style="display:flex;align-items:center;gap:12px">
+      <a class="logo" href="/"><div class="logo-icon"><img src="/logo.png" alt="VH"></div><span class="logo-text">VERTIC<span>HUB</span></span></a>
+      <span class="nbadge">ADMIN</span>
     </div>
-    <button class="nav-btn" id="navLogout" onclick="doLogout()" style="display:none">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout
-    </button>
-    <a href="/" class="nav-btn">
-      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Home
-    </a>
+    <div class="nright">
+      <a href="/">Beranda</a>
+      <span id="lUpd" style="font-family:var(--fM);font-size:10px;color:var(--t3)"></span>
+      <button id="nLogout" onclick="doLogout()">Keluar</button>
+    </div>
   </div>
 </nav>
 
-<!-- LOGIN -->
-<div id="loginPage">
-  <div class="login-orb"></div>
-  <div class="login-card">
-    <div class="login-top">
-      <img src="/logo.png" alt="VH" class="login-logo">
-      <div class="login-tag">Admin Panel</div>
-      <div class="login-title">DASH<span>BOARD</span></div>
-    </div>
-    <div class="login-body">
-      <div class="field">
-        <div class="f-lbl">Admin Secret</div>
-        <input type="password" class="f-inp" id="secretIn" placeholder="Masukkan admin secret..." onkeydown="if(event.key==='Enter')doLogin()">
+<div class="page">
+  <!-- LOGIN -->
+  <div id="pLogin">
+    <div class="lw">
+      <div class="lhead">
+        <div class="ltag">Admin Panel</div>
+        <div class="ltitle">MASUK</div>
+        <div class="lsub">Masukkan admin secret untuk melanjutkan.</div>
       </div>
-      <button class="btn-login" id="btnLogin" onclick="doLogin()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Masuk
-      </button>
-      <div class="login-st" id="loginSt"></div>
+      <div class="card">
+        <label class="flabel" for="sInput">Admin Secret</label>
+        <input type="password" id="sInput" class="ifield" placeholder="Secret..." onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn btn-blue" onclick="doLogin()" style="margin-top:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Masuk
+        </button>
+        <div id="lStat" class="stat"></div>
+      </div>
     </div>
-    <div class="login-foot">Hanya untuk admin. &nbsp;<a href="/getkey/">Ambil key di sini</a></div>
   </div>
-</div>
 
-<!-- DASHBOARD -->
-<div id="dashPage">
-  <div class="dash-wrap">
-    <div class="sidebar">
-      <div class="sb-sec">
-        <div class="sb-lbl">Menu</div>
-        <button class="sb-link active" id="sl-keys" onclick="sw('keys')"><svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>Keys</button>
-        <button class="sb-link" id="sl-blacklist" onclick="sw('blacklist')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Blacklist</button>
-        <button class="sb-link" id="sl-logs" onclick="sw('logs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Logs</button>
-        <button class="sb-link" id="sl-settings" onclick="sw('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+  <!-- DASHBOARD -->
+  <div id="pDash">
+    <div class="dtop">
+      <!-- STATS -->
+      <div class="sc-row">
+        <div class="sc"><div class="sc-val blue" id="stTotal">—</div><div class="sc-lbl">Total Key</div></div>
+        <div class="sc"><div class="sc-val green" id="stActive">—</div><div class="sc-lbl">Aktif</div></div>
+        <div class="sc"><div class="sc-val red" id="stExpired">—</div><div class="sc-lbl">Expired</div></div>
+        <div class="sc"><div class="sc-val" id="stBound">—</div><div class="sc-lbl">Ter-bind</div></div>
+        <div class="sc"><div class="sc-val yellow" id="stToday">—</div><div class="sc-lbl">Hari Ini</div></div>
       </div>
-    </div>
 
-    <div class="dash-main">
+      <!-- TABS -->
+      <div class="tabs-row">
+        <button class="tab on" onclick="sw('keys')">Key</button>
+        <button class="tab" onclick="sw('blacklist')">Blacklist</button>
+        <button class="tab" onclick="sw('logs')">Log</button>
+        <button class="tab" onclick="sw('chart')">Chart</button>
+        <button class="tab" onclick="sw('settings')">Settings</button>
+      </div>
 
       <!-- KEYS TAB -->
-      <div class="tab-c active" id="tab-keys">
-        <div class="dash-topbar">
-          <div><div class="tb-t">Key Management</div><div class="tb-s" id="lastUpd">// memuat...</div></div>
-          <div class="tb-acts">
-            <button class="btn-sm pr" onclick="toggleGen()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Generate</button>
-            <button class="btn-sm da" onclick="doBulkDel()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Del Expired</button>
-            <button class="btn-sm" onclick="loadKeys()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh</button>
-          </div>
+      <div id="t-keys">
+        <div class="toolbar">
+          <input type="text" id="qSearch" placeholder="Cari key, HWID, username..." oninput="renderTbl()">
+          <select class="tb-sel" id="qFil" onchange="renderTbl()">
+            <option value="all">Semua</option>
+            <option value="active">Aktif</option>
+            <option value="expired">Expired</option>
+            <option value="bound">Ter-bind</option>
+            <option value="free">Bebas</option>
+          </select>
+          <div class="sep"></div>
+          <!-- GENERATE -->
+          <button class="ab" onclick="openGen()">+ Generate</button>
+          <!-- BULK DELETE EXPIRED -->
+          <button class="ab del" onclick="doBulkDel()">Hapus Expired</button>
+          <!-- DELETE ALL -->
+          <button class="ab del" onclick="doDeleteAll()">Hapus Semua</button>
+          <div class="ml-auto" style="font-family:var(--fM);font-size:10px;color:var(--t3)" id="lUpd2"></div>
         </div>
-        <div class="content">
-          <div class="stats-row">
-            <div class="sc"><div class="sc-n" id="st-total" style="--c:var(--blue2)">—</div><div class="sc-l">Total</div></div>
-            <div class="sc"><div class="sc-n" id="st-active" style="--c:var(--green)">—</div><div class="sc-l">Aktif</div></div>
-            <div class="sc"><div class="sc-n" id="st-expired" style="--c:var(--red)">—</div><div class="sc-l">Expired</div></div>
-            <div class="sc"><div class="sc-n" id="st-bound" style="--c:var(--blue2)">—</div><div class="sc-l">Bound</div></div>
-            <div class="sc"><div class="sc-n" id="st-today" style="--c:var(--yellow)">—</div><div class="sc-l">Hari Ini</div></div>
-          </div>
-          <div class="gen-form" id="genForm">
-            <div class="gen-t">Generate Key Baru</div>
-            <div class="gen-row">
-              <div class="gen-f"><label>Jumlah</label><input type="number" id="genCnt" value="1" min="1" max="50"></div>
-              <div class="gen-f"><label>Berlaku (hari)</label><input type="number" id="genDays" value="1" min="1" max="365"></div>
-              <button class="btn-sm pr" onclick="doGen()" style="margin-bottom:0">Generate</button>
-            </div>
-            <div class="gen-res" id="genRes"></div>
-          </div>
-          <div class="toolbar">
-            <input type="text" class="s-inp" id="searchIn" placeholder="Cari key, username, HWID..." oninput="renderTbl()">
-          </div>
-          <div class="pills">
-            <button class="pill active" onclick="setF('all',this)">Semua</button>
-            <button class="pill" onclick="setF('active',this)">Aktif</button>
-            <button class="pill" onclick="setF('expired',this)">Expired</button>
-            <button class="pill" onclick="setF('bound',this)">Bound</button>
-            <button class="pill" onclick="setF('free',this)">Bebas</button>
-          </div>
-          <div class="tw"><table>
-            <thead><tr>
-              <th onclick="sBy('key')">Key</th>
-              <th>Status</th>
-              <th>Username</th>
-              <th>HWID</th>
-              <th onclick="sBy('expires')">Expire</th>
-              <th onclick="sBy('createdAt')">Dibuat</th>
-              <th>Aksi</th>
-            </tr></thead>
-            <tbody id="tBody"></tbody>
-          </table></div>
-          <div class="t-info" id="tInfo"></div>
+        <!-- SELECTION BAR -->
+        <div class="sel-bar" id="selBar">
+          <span class="sel-count" id="selCount">0 dipilih</span>
+          <button class="sel-btn sel-btn-del" onclick="doDeleteSelected()">Hapus yang Dipilih</button>
+          <button class="sel-btn sel-btn-clear" onclick="clearSel()">Batal Pilih</button>
         </div>
+        <div id="tblWrap"><div class="empty">Belum ada data.</div></div>
+        <div id="dsStat" class="stat" style="margin-top:8px"></div>
       </div>
 
       <!-- BLACKLIST TAB -->
-      <div class="tab-c" id="tab-blacklist">
-        <div class="dash-topbar">
-          <div><div class="tb-t">Blacklist HWID</div><div class="tb-s">// kelola device yang diblacklist</div></div>
-          <div class="tb-acts"><button class="btn-sm" onclick="loadBL()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh</button></div>
-        </div>
-        <div class="content">
-          <div class="bl-f">
-            <div class="bl-ft">Tambah ke Blacklist</div>
-            <div class="bl-row">
-              <div class="bl-fd" style="flex:2"><label>HWID</label><input type="text" id="blHwid" placeholder="HWID device..."></div>
-              <div class="bl-fd" style="flex:2"><label>Alasan</label><input type="text" id="blReason" placeholder="Alasan..."></div>
-              <div class="bl-fd" style="flex:0 0 130px"><label>Durasi hari (0=perm)</label><input type="number" id="blDays" value="0" min="0"></div>
-              <button class="btn-sm da" onclick="doBL()" style="margin-bottom:0;flex-shrink:0">Blacklist</button>
-            </div>
-            <div class="login-st" id="blSt" style="text-align:left;margin-top:8px;font-size:11px"></div>
+      <div id="t-blacklist" style="display:none">
+        <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--ln)">
+          <div class="flabel" style="margin-bottom:10px">Blacklist HWID Baru</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start">
+            <input type="text" id="blHwid" placeholder="HWID..." style="flex:1;min-width:160px;padding:8px 11px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:7px;color:var(--t);font-family:var(--fM);font-size:12px;outline:none">
+            <input type="text" id="blReason" placeholder="Alasan..." style="flex:2;min-width:160px;padding:8px 11px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:7px;color:var(--t);font-family:var(--fH);font-size:12px;outline:none">
+            <input type="number" id="blDays" placeholder="Hari (0=∞)" min="0" max="365" value="0" style="width:110px;padding:8px 11px;background:var(--s1);border:1.5px solid var(--ln2);border-radius:7px;color:var(--t);font-family:var(--fM);font-size:12px;outline:none;text-align:center">
+            <button onclick="doAddBL()" class="ab ok">Blacklist</button>
           </div>
-          <div id="blWrap"></div>
+          <div id="blStat" class="stat" style="text-align:left;margin-top:6px"></div>
         </div>
+        <div id="blList"><div class="empty">Memuat...</div></div>
       </div>
 
       <!-- LOGS TAB -->
-      <div class="tab-c" id="tab-logs">
-        <div class="dash-topbar">
-          <div><div class="tb-t">Log Aktivitas</div><div class="tb-s">// histori semua aksi admin</div></div>
-          <div class="tb-acts"><button class="btn-sm" onclick="loadLogs()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh</button></div>
-        </div>
-        <div class="content"><div class="log-list" id="logList"></div></div>
+      <div id="t-logs" style="display:none">
+        <div id="logList"><div class="empty">Memuat...</div></div>
+      </div>
+
+      <!-- CHART TAB -->
+      <div id="t-chart" style="display:none">
+        <div class="flabel" style="margin-bottom:12px">Key dibuat per hari (7 hari terakhir)</div>
+        <div class="chart-wrap"><canvas id="myChart"></canvas></div>
       </div>
 
       <!-- SETTINGS TAB -->
-      <div class="tab-c" id="tab-settings">
-        <div class="dash-topbar"><div><div class="tb-t">Pengaturan</div><div class="tb-s">// konfigurasi limit sistem key</div></div></div>
-        <div class="content">
-          <div class="sb-blk">
-            <div class="sb-t">Max Key Per Hari</div>
-            <div class="sb-d">Batas maksimal key baru per hari oleh semua user. Set 0 untuk unlimited.</div>
-            <input type="number" class="sb-in" id="cfgDay" placeholder="0 = unlimited" min="0">
-          </div>
-          <div class="sb-blk">
-            <div class="sb-t">Max Total Key Aktif</div>
-            <div class="sb-d">Batas maksimal total key aktif bersamaan. Set 0 untuk unlimited.</div>
-            <input type="number" class="sb-in" id="cfgTotal" placeholder="0 = unlimited" min="0">
-          </div>
-          <button class="btn-sm pr" onclick="saveConfig()" style="margin-top:8px">Simpan</button>
-          <div class="login-st" id="cfgSt" style="text-align:left;margin-top:10px;font-size:11px"></div>
+      <div id="t-settings" style="display:none">
+        <div class="flabel" style="margin-bottom:12px">Konfigurasi</div>
+        <div class="cfg-row">
+          <label>Max Key per Hari <span style="font-family:var(--fM);font-size:10px;color:var(--t3)">(0 = tidak terbatas)</span></label>
+          <input type="number" id="cfgPerDay" min="0" value="0">
         </div>
+        <div class="cfg-row">
+          <label>Max Key Aktif Total <span style="font-family:var(--fM);font-size:10px;color:var(--t3)">(0 = tidak terbatas)</span></label>
+          <input type="number" id="cfgTotal" min="0" value="0">
+        </div>
+        <div class="cfg-hint">Perubahan berlaku segera untuk semua request baru.</div>
+        <button class="btn btn-blue" onclick="saveCfg()" style="width:auto;padding:10px 24px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
+          Simpan Konfigurasi
+        </button>
+        <div id="cfgStat" class="stat" style="text-align:left;margin-top:8px"></div>
       </div>
+    </div>
+  </div>
+</div>
 
+<!-- GENERATE MODAL -->
+<div class="mb" id="genModal">
+  <div class="mo">
+    <h3>Generate Key</h3>
+    <div style="margin-bottom:10px"><label class="flabel">Jumlah Key</label><input type="number" id="genCount" min="1" max="50" value="1" class="ifield"></div>
+    <div style="margin-bottom:12px"><label class="flabel">Masa Berlaku (hari)</label><input type="number" id="genDays" min="1" max="365" value="1" class="ifield"></div>
+    <div id="genRes" style="font-family:var(--fM);font-size:11px;color:var(--g);margin-bottom:10px;word-break:break-all;max-height:120px;overflow-y:auto"></div>
+    <div class="mac">
+      <button class="btn btn-out" onclick="closeGen()" style="flex:1">Batal</button>
+      <button class="btn btn-blue" id="genBtn" onclick="doGen()" style="flex:2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Generate
+      </button>
     </div>
   </div>
 </div>
 
 <!-- EXTEND MODAL -->
-<div class="modal-ov" id="extModal">
-  <div class="modal">
-    <div class="modal-t">Perpanjang Key</div>
-    <div class="modal-s" id="extLbl">VH-...</div>
-    <div class="dm-f">
-      <div class="dm-l">Expire saat ini</div>
-      <div style="font-family:'Courier New',monospace;font-size:12px;color:var(--blue2);margin-bottom:12px" id="extCur">—</div>
-    </div>
-    <div class="field"><div class="f-lbl">Tambah Hari</div><input type="number" class="f-inp" id="extDays" value="1" min="1" max="365"></div>
-    <div class="modal-acts">
-      <button class="btn-sm" onclick="closeMod('extModal')">Batal</button>
-      <button class="btn-sm pr" onclick="doExtend()">Perpanjang</button>
+<div class="mb" id="extModal">
+  <div class="mo">
+    <h3>Perpanjang Key</h3>
+    <div style="font-family:var(--fM);font-size:11px;color:var(--blue);margin-bottom:12px;word-break:break-all" id="extKey"></div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Expire saat ini: <span id="extExp" style="font-family:var(--fM);color:var(--t)"></span></div>
+    <div style="margin-bottom:12px"><label class="flabel">Tambah hari</label><input type="number" id="extDays" min="1" max="365" value="1" class="ifield"></div>
+    <div class="mac">
+      <button class="btn btn-out" onclick="closeExt()" style="flex:1">Batal</button>
+      <button class="btn btn-blue" onclick="doExt()" style="flex:2">Perpanjang</button>
     </div>
   </div>
 </div>
 
 <!-- DETAIL MODAL -->
-<div class="modal-ov" id="detModal">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-t">Detail Key</div>
-    <div class="dm-f"><div class="dm-l">Key</div><div class="dm-v"><span id="dm-key" style="color:var(--blue2)"></span><button class="cp-in" onclick="dmCp('dm-key')">Salin</button></div></div>
-    <div class="dm-f"><div class="dm-l">HWID</div><div class="dm-v"><span id="dm-hwid" style="color:var(--blue2);font-size:10px"></span><button class="cp-in" onclick="dmCp('dm-hwid')">Salin</button></div></div>
-    <div class="dm-grid">
-      <div class="dgi"><div class="dgi-l">Username</div><div class="dgi-v" id="dm-uname">—</div></div>
-      <div class="dgi"><div class="dgi-l">Status</div><div class="dgi-v" id="dm-st">—</div></div>
-      <div class="dgi"><div class="dgi-l">Expire</div><div class="dgi-v" id="dm-exp" style="font-size:10px">—</div></div>
-      <div class="dgi"><div class="dgi-l">Last Used</div><div class="dgi-v" id="dm-lu" style="font-size:10px">—</div></div>
+<div class="mb" id="detModal">
+  <div class="mo" style="max-width:440px">
+    <h3>Detail Key</h3>
+    <div style="margin-bottom:10px">
+      <label class="flabel">Key</label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="dm-key" style="font-family:var(--fM);font-size:12px;color:var(--blue);word-break:break-all;flex:1"></div>
+        <button onclick="dmCp('dm-key')" class="ab">Salin</button>
+      </div>
     </div>
-    <div class="modal-acts" style="flex-wrap:wrap">
-      <button class="btn-sm" onclick="closeMod('detModal')">Tutup</button>
-      <button class="btn-sm rst" style="color:var(--blue2);border-color:rgba(0,195,255,0.3)" onclick="dmRst()">Reset HWID</button>
-      <button class="btn-sm ext" style="color:var(--yellow);border-color:rgba(255,184,0,0.3)" onclick="dmExt()">+Hari</button>
-      <button class="btn-sm da" onclick="dmDel()">Hapus</button>
+    <div style="margin-bottom:10px">
+      <label class="flabel">HWID Roblox</label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="dm-hwid" style="font-family:var(--fM);font-size:11px;color:var(--t);word-break:break-all;flex:1;background:var(--s1);border:1px solid var(--ln);border-radius:6px;padding:6px 10px;min-height:30px"></div>
+        <button onclick="dmCp('dm-hwid')" class="ab">Salin</button>
+      </div>
+    </div>
+    <div id="dm-bhrow" style="margin-bottom:10px;display:none">
+      <label class="flabel">HWID Browser</label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="dm-bhwid" style="font-family:var(--fM);font-size:11px;color:var(--blue);word-break:break-all;flex:1;background:var(--s1);border:1px solid var(--ln);border-radius:6px;padding:6px 10px;min-height:30px"></div>
+        <button onclick="dmCp('dm-bhwid')" class="ab">Salin</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px">
+      <div style="background:var(--s1);border:1px solid var(--ln);border-radius:7px;padding:8px 10px"><div class="flabel">Username</div><div id="dm-un" style="font-size:12px;font-family:var(--fM)">—</div></div>
+      <div style="background:var(--s1);border:1px solid var(--ln);border-radius:7px;padding:8px 10px"><div class="flabel">Status</div><div id="dm-st" style="font-size:12px;font-family:var(--fM)">—</div></div>
+      <div style="background:var(--s1);border:1px solid var(--ln);border-radius:7px;padding:8px 10px"><div class="flabel">Source</div><div id="dm-src" style="font-size:12px;font-family:var(--fM)">—</div></div>
+      <div style="background:var(--s1);border:1px solid var(--ln);border-radius:7px;padding:8px 10px"><div class="flabel">Expire</div><div id="dm-exp" style="font-size:12px;font-family:var(--fM)">—</div></div>
+    </div>
+    <div id="dm-blw" style="display:none;margin-bottom:10px;background:rgba(232,52,74,.04);border:1px solid rgba(232,52,74,.18);border-radius:8px;padding:11px">
+      <div id="dm-blw-title" style="font-size:10px;color:var(--r);font-family:var(--fM);margin-bottom:7px;text-transform:uppercase;letter-spacing:1.5px">Blacklist HWID</div>
+      <input type="text" id="dm-blr" placeholder="Alasan...">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="dm-bld" placeholder="Hari (0=∞)" min="0" max="365" value="0" style="width:130px">
+        <button onclick="dmBL()" style="background:rgba(232,52,74,.12);border:1px solid rgba(232,52,74,.3);color:var(--r);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--fM);font-weight:500">Blacklist</button>
+      </div>
+      <div id="dm-bls" style="font-size:11px;margin-top:7px;font-family:var(--fM)"></div>
+    </div>
+    <div class="mac" style="flex-wrap:wrap;gap:6px">
+      <button class="btn btn-out" onclick="closeDet()" style="flex:1;min-width:60px">Tutup</button>
+      <button id="dm-btnbl" onclick="togBLF('roblox')" style="flex:1;min-width:60px;background:rgba(232,52,74,.08);border:1px solid rgba(232,52,74,.25);color:var(--r);border-radius:8px;padding:10px;cursor:pointer;font-size:12px;font-family:var(--fH);font-weight:600">BL Roblox</button>
+      <button id="dm-btnblb" onclick="togBLF('browser')" style="flex:1;min-width:60px;background:rgba(232,52,74,.06);border:1px solid rgba(232,52,74,.2);color:var(--r);border-radius:8px;padding:10px;cursor:pointer;font-size:12px;font-family:var(--fH);font-weight:600">BL Browser</button>
+      <button id="dm-btnrst" onclick="dmRst()" style="flex:1;min-width:60px;background:var(--bluA);border:1px solid var(--ln2);color:var(--blue);border-radius:8px;padding:10px;cursor:pointer;font-size:12px;font-family:var(--fH);font-weight:600">Reset HWID</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script>
-const API = '/api';
-let _sec='', _keys=[], _filter='all', _sortC='createdAt', _sortD=-1, _extKey='', _dmKey=null, _toastT=null;
+const API=location.origin;
+let _sec='',_keys=[],_fil='all',_sc='createdAt',_sd=-1,_ek='',_dm=null,_sel=new Set(),_blTarget='roblox';
 
-// AUTH
-async function doLogin() {
-  const sec = document.getElementById('secretIn').value.trim();
-  const st  = document.getElementById('loginSt');
-  const btn = document.getElementById('btnLogin');
-  if (!sec) return;
-  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Memeriksa...';
-  st.textContent=''; st.className='login-st';
-  try {
-    const r = await fetch(`${API}/dashboard?secret=${encodeURIComponent(sec)}&action=list`);
-    const d = await r.json();
-    if (d.stats) {
-      _sec=sec;
-      document.getElementById('loginPage').style.display='none';
-      document.getElementById('dashPage').style.display='block';
-      document.getElementById('navLogout').style.display='flex';
-      setOnline(true);
-      _keys=d.keys||[];
-      if(d.config) window._cfg=d.config;
-      renderStats(d.stats); renderTbl();
-      document.getElementById('lastUpd').textContent=`// diperbarui ${new Date().toLocaleTimeString('id-ID')}`;
-    } else {
-      st.textContent='Secret salah.'; st.className='login-st err';
-      btn.disabled=false;
-      btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Masuk';
-    }
-  } catch(e) {
-    st.textContent='Koneksi error.'; st.className='login-st err';
-    btn.disabled=false; btn.innerHTML='Masuk';
-  }
+// ── WIB helpers ────────────────────────────────────────────────
+function fmtWIB(iso,withTime){
+  if(!iso)return'—';
+  const d=new Date(iso);
+  if(withTime)return d.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' WIB';
+  const w=new Date(d.getTime()+7*60*60*1000);return w.toISOString().substring(0,10);
 }
+function todayWIB(){const w=new Date(Date.now()+7*60*60*1000);return w.toISOString().substring(0,10);}
 
-function doLogout() {
-  _sec=''; _keys=[];
-  document.getElementById('loginPage').style.display='flex';
-  document.getElementById('dashPage').style.display='none';
-  document.getElementById('navLogout').style.display='none';
-  document.getElementById('secretIn').value='';
-  document.getElementById('loginSt').textContent='';
-  document.getElementById('btnLogin').disabled=false;
-  document.getElementById('btnLogin').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Masuk';
-  setOnline(false);
+async function doLogin(){
+  const s=document.getElementById('sInput').value.trim();if(!s)return;
+  const el=document.getElementById('lStat');el.textContent='Memeriksa...';el.className='stat';
+  try{
+    const res=await fetch(`${API}/api/dashboard?secret=${encodeURIComponent(s)}&action=list`);
+    const d=await res.json();
+    if(d.stats){
+      _sec=s;_keys=d.keys||[];if(d.config)window._cfg=d.config;
+      document.getElementById('pLogin').style.display='none';
+      document.getElementById('pDash').style.display='block';
+      document.getElementById('nLogout').style.display='block';
+      rStats(d.stats);renderTbl();buildChart();
+      document.getElementById('lUpd').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'});
+      document.getElementById('lUpd2').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'});
+    }else{el.textContent='Secret tidak valid.';el.className='stat e';}
+  }catch(e){el.textContent='Kesalahan koneksi.';el.className='stat e';}
 }
-
-function setOnline(on) {
-  const el=document.getElementById('navStat');
-  el.className=on?'nav-stat online':'nav-stat';
-  el.innerHTML=`<div class="nav-dot"></div><span>${on?'Online':'Offline'}</span>`;
+function doLogout(){_sec='';_keys=[];document.getElementById('pDash').style.display='none';document.getElementById('pLogin').style.display='flex';document.getElementById('nLogout').style.display='none';document.getElementById('sInput').value='';}
+function rStats(s){
+  document.getElementById('stTotal').textContent=s.total||0;
+  document.getElementById('stActive').textContent=s.active||0;
+  document.getElementById('stExpired').textContent=s.expired||0;
+  document.getElementById('stBound').textContent=s.bound||0;
+  document.getElementById('stToday').textContent=s.todayCount||0;
 }
-
-// TOAST
-function toast(msg,type='',dur=3000) {
-  const el=document.getElementById('toast');
-  clearTimeout(_toastT);
-  el.textContent=msg; el.className='show '+type;
-  _toastT=setTimeout(()=>el.classList.remove('show'),dur);
+function sw(n){
+  ['keys','blacklist','logs','chart','settings'].forEach(t=>{document.getElementById('t-'+t).style.display=t===n?'block':'none';});
+  document.querySelectorAll('.tab').forEach((el,i)=>{el.classList.toggle('on',['keys','blacklist','logs','chart','settings'][i]===n);});
+  if(n==='blacklist')loadBL();if(n==='logs')loadLogs();if(n==='chart')buildChart();if(n==='settings')loadCfg();
 }
-
-// TAB
-function sw(name) {
-  ['keys','blacklist','logs','settings'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active',t===name);
-    document.getElementById('sl-'+t).classList.toggle('active',t===name);
-  });
-  if(name==='logs') loadLogs();
-  if(name==='blacklist') loadBL();
-  if(name==='settings') loadCfg();
+async function loadKeys(){
+  try{
+    const res=await fetch(`${API}/api/dashboard?secret=${encodeURIComponent(_sec)}&action=list`);
+    const d=await res.json();
+    if(d.keys){_keys=d.keys;if(d.stats)rStats(d.stats);if(d.config)window._cfg=d.config;clearSel();renderTbl();}
+    document.getElementById('lUpd').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'});
+    document.getElementById('lUpd2').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta'});
+  }catch(e){setDS('Gagal refresh.','e');}
 }
+function setDS(msg,cls){const el=document.getElementById('dsStat');if(!el)return;el.textContent=msg;el.className='stat '+(cls||'');}
 
-// KEYS
-async function loadKeys() {
-  try {
-    const r=await fetch(`${API}/dashboard?secret=${encodeURIComponent(_sec)}&action=list`);
-    const d=await r.json();
-    _keys=d.keys||[];
-    if(d.config) window._cfg=d.config;
-    renderStats(d.stats); renderTbl();
-    document.getElementById('lastUpd').textContent=`// diperbarui ${new Date().toLocaleTimeString('id-ID')}`;
-    toast('Data diperbarui','ok');
-  } catch(e){ toast('Gagal refresh','err'); }
-}
-
-function renderStats(s) {
-  document.getElementById('st-total').textContent=s.total;
-  document.getElementById('st-active').textContent=s.active;
-  document.getElementById('st-expired').textContent=s.expired;
-  document.getElementById('st-bound').textContent=s.bound;
-  document.getElementById('st-today').textContent=s.todayCount;
-}
-
-function setF(f,el) {
-  _filter=f;
-  document.querySelectorAll('.pills .pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active'); renderTbl();
-}
-
-function sBy(col) {
-  _sortD=_sortC===col?-_sortD:-1; _sortC=col; renderTbl();
-}
-
-function renderTbl() {
-  const q=(document.getElementById('searchIn').value||'').toLowerCase();
+function renderTbl(){
+  const q=(document.getElementById('qSearch').value||'').toLowerCase().trim();
+  const f=document.getElementById('qFil').value;
   let rows=_keys.filter(k=>{
-    if(_filter==='active'  && k.expired) return false;
-    if(_filter==='expired' && !k.expired) return false;
-    if(_filter==='bound'   && !k.hwid) return false;
-    if(_filter==='free'    && k.hwid) return false;
-    if(q) return (k.key||'').toLowerCase().includes(q)||(k.hwid||'').toLowerCase().includes(q)||(k.username||'').toLowerCase().includes(q);
+    if(f==='active'&&k.expired)return false;if(f==='expired'&&!k.expired)return false;
+    if(f==='bound'&&!k.hwid)return false;if(f==='free'&&k.hwid)return false;
+    if(q)return k.key.toLowerCase().includes(q)||(k.hwid||'').toLowerCase().includes(q)||(k.username||'').toLowerCase().includes(q)||(k.browserHwid||'').toLowerCase().includes(q);
     return true;
   });
   rows.sort((a,b)=>{
-    let va=a[_sortC]||'',vb=b[_sortC]||'';
-    if(typeof va==='boolean'){va=va?1:0;vb=vb?1:0;}
-    return va<vb?-_sortD:va>vb?_sortD:0;
+    let av=a[_sc]||'',bv=b[_sc]||'';
+    if(typeof av==='boolean')av=av?1:0,bv=bv?1:0;
+    return _sd*(av>bv?1:av<bv?-1:0);
   });
-  document.getElementById('tInfo').textContent=`${rows.length} / ${_keys.length} key`;
-  const tb=document.getElementById('tBody');
-  if(!rows.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty-row">TIDAK ADA KEY</div></td></tr>`;return;}
-  tb.innerHTML=rows.map(k=>{
-    const ke=k.key.replace(/'/g,"\\'");
-    const hs=k.hwid?k.hwid.substring(0,14)+'...':'';
-    return `<tr onclick="openDet('${ke}')">
-      <td style="color:var(--blue2)">${k.key}</td>
-      <td><span class="badge ${k.expired?'b-r':'b-g'}">${k.expired?'Expired':'Aktif'}</span></td>
-      <td style="color:var(--muted)">${k.username||'—'}</td>
-      <td style="color:var(--muted2)" title="${k.hwid||''}">${k.hwid?hs:'<span class="badge b-m">Bebas</span>'}</td>
-      <td style="color:${k.expired?'var(--red)':'var(--muted)'}">${k.expires?k.expires.substring(0,10):'—'}</td>
-      <td style="color:var(--muted2)">${k.createdAt?k.createdAt.substring(0,10):'—'}</td>
-      <td onclick="event.stopPropagation()" style="white-space:nowrap">
-        <button class="act-btn ext" onclick="openExt('${ke}','${k.expires||''}')">+Hari</button>
-        <button class="act-btn rst" onclick="doRst('${ke}')">Reset</button>
-        <button class="act-btn del" onclick="doDel('${ke}')">Hapus</button>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-// GEN
-function toggleGen(){document.getElementById('genForm').classList.toggle('open')}
-async function doGen(){
-  const cnt=parseInt(document.getElementById('genCnt').value)||1;
-  const days=parseInt(document.getElementById('genDays').value)||1;
-  const el=document.getElementById('genRes');
-  el.innerHTML='<span style="color:var(--muted)">Generating...</span>';
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'genkey',count:cnt,expireDays:days})});
-    const d=await r.json();
-    if(d.success){
-      el.innerHTML=`<span style="color:var(--green)">${d.keys.length} key dibuat (${days} hari)</span><br>`+d.keys.map(k=>`<span style="color:var(--blue2);cursor:pointer" onclick="navigator.clipboard.writeText('${k}')" title="Klik salin">${k}</span>`).join('<br>');
-      loadKeys();
-    }else el.innerHTML=`<span style="color:var(--red)">${d.error||'Gagal'}</span>`;
-  }catch(e){el.innerHTML='<span style="color:var(--red)">Koneksi error</span>';}
-}
-
-// DELETE/RESET
-async function doDel(key){
-  if(!confirm(`Hapus key ${key}?`)) return;
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'delete',key})});
-    const d=await r.json();
-    if(d.success){toast('Key dihapus','ok');loadKeys();closeMod('detModal');}
-    else toast(d.error||'Gagal','err');
-  }catch(e){toast('Koneksi error','err');}
-}
-
-async function doRst(key){
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'resethwid',key})});
-    const d=await r.json();
-    if(d.success){toast('HWID direset','ok');loadKeys();closeMod('detModal');}
-    else toast(d.error||'Gagal','err');
-  }catch(e){toast('Koneksi error','err');}
-}
-
-async function doBulkDel(){
-  const n=_keys.filter(k=>k.expired).length;
-  if(!n){toast('Tidak ada key expired','');return;}
-  if(!confirm(`Hapus ${n} key expired?`)) return;
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'bulkdelete'})});
-    const d=await r.json();
-    if(d.success){toast(`${d.deleted} key dihapus`,'ok');loadKeys();}
-    else toast(d.error||'Gagal','err');
-  }catch(e){toast('Koneksi error','err');}
-}
-
-// EXTEND
-function openExt(key,exp){
-  _extKey=key;
-  document.getElementById('extLbl').textContent=key;
-  document.getElementById('extCur').textContent=exp?exp.substring(0,10):'—';
-  document.getElementById('extDays').value=1;
-  document.getElementById('extModal').classList.add('open');
-}
-async function doExtend(){
-  const days=parseInt(document.getElementById('extDays').value)||1;
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'extend',key:_extKey,days})});
-    const d=await r.json();
-    closeMod('extModal');
-    if(d.success){toast(`Diperpanjang ${days} hari`,'ok');loadKeys();closeMod('detModal');}
-    else toast(d.error||'Gagal','err');
-  }catch(e){toast('Koneksi error','err');closeMod('extModal');}
-}
-
-// DETAIL
-function openDet(key){
-  const k=_keys.find(x=>x.key===key);
-  if(!k) return;
-  _dmKey=k;
-  document.getElementById('dm-key').textContent=k.key;
-  document.getElementById('dm-hwid').textContent=k.hwid||'— Belum terhubung —';
-  document.getElementById('dm-uname').textContent=k.username||'—';
-  document.getElementById('dm-exp').textContent=k.expires?k.expires.substring(0,16).replace('T',' '):'—';
-  document.getElementById('dm-lu').textContent=k.lastUsed?k.lastUsed.substring(0,16).replace('T',' '):'Belum pernah';
-  const st=document.getElementById('dm-st');
-  st.textContent=k.expired?'Expired':'Aktif';
-  st.style.color=k.expired?'var(--red)':'var(--green)';
-  document.getElementById('detModal').classList.add('open');
-}
-function dmCp(id){
-  const t=document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.querySelector(`[onclick="dmCp('${id}')"]`);
-    if(b){b.textContent='Disalin';setTimeout(()=>b.textContent='Salin',1200);}
-  });
-}
-function dmRst(){if(_dmKey)doRst(_dmKey.key);}
-function dmDel(){if(_dmKey)doDel(_dmKey.key);}
-function dmExt(){if(_dmKey){closeMod('detModal');openExt(_dmKey.key,_dmKey.expires);}}
-
-// BLACKLIST
-async function loadBL(){
-  const el=document.getElementById('blWrap');
-  el.innerHTML='<div style="font-family:\'Courier New\',monospace;font-size:11px;color:var(--muted);padding:16px 0">Memuat...</div>';
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'listblacklist'})});
-    const d=await r.json();
-    renderBL(d.blacklist||[]);
-  }catch(e){el.innerHTML='<div style="color:var(--red);font-family:\'Courier New\',monospace;font-size:11px">Gagal memuat</div>';}
-}
-function renderBL(list){
-  const el=document.getElementById('blWrap');
-  if(!list.length){el.innerHTML='<div style="font-family:var(--orb);font-size:9px;color:var(--muted2);letter-spacing:2px;padding:16px 0">TIDAK ADA DATA</div>';return;}
-  el.innerHTML=`<div class="tw"><table>
-    <thead><tr><th>HWID</th><th>Alasan</th><th>Durasi</th><th>Status</th><th>Aksi</th></tr></thead>
-    <tbody>${list.map(b=>{
-      const perm=!b.expireAt;
-      const st=b.expired?'<span class="badge b-m">Expired</span>':perm?'<span class="badge b-r">Permanent</span>':`<span class="badge b-m">${b.expireAt.substring(0,10)}</span>`;
-      return `<tr>
-        <td style="font-family:'Courier New',monospace;font-size:10px;color:var(--blue2)" title="${b.hwid}">${b.hwid.substring(0,22)}${b.hwid.length>22?'...':''}</td>
-        <td style="color:var(--muted)">${b.reason}</td>
-        <td style="color:var(--muted)">${b.days==='permanent'?'—':b.days+' hari'}</td>
-        <td>${st}</td>
-        <td><button class="act-btn" style="color:var(--green);border-color:rgba(0,229,160,0.3)" onclick="doUnBL('${b.hwid}')">Hapus</button></td>
+  const wrap=document.getElementById('tblWrap');
+  if(!rows.length){wrap.innerHTML='<div class="empty">Tidak ada data yang cocok.</div>';return;}
+  const selAll=rows.every(k=>_sel.has(k.key));
+  wrap.innerHTML=`<div class="tw"><table>
+    <thead><tr>
+      <th><input type="checkbox" class="cb" id="cbAll" ${selAll?'checked':''} onchange="toggleAll(this)"></th>
+      <th onclick="sort('key')">KEY <span class="si" id="si-key">↕</span></th>
+      <th onclick="sort('expires')">EXPIRE <span class="si" id="si-expires">↕</span></th>
+      <th onclick="sort('createdAt')">DIBUAT <span class="si" id="si-createdAt">↕</span></th>
+      <th>HWID</th><th onclick="sort('username')">USERNAME <span class="si" id="si-username">↕</span></th>
+      <th>STATUS</th><th>AKSI</th>
+    </tr></thead>
+    <tbody>${rows.map(k=>{
+      const ke=k.key.replace(/'/g,"\\'");
+      const hwidShort=k.hwid?k.hwid.substring(0,14)+'…':'';
+      const stat=k.expired?'<span class="badge badge-err">Expired</span>':'<span class="badge badge-ok">Aktif</span>';
+      return `<tr class="${_sel.has(k.key)?'selected':''}" onclick="rowClick(event,'${ke}')">
+        <td><input type="checkbox" class="cb" ${_sel.has(k.key)?'checked':''} onchange="toggleSel('${ke}',this)" onclick="event.stopPropagation()"></td>
+        <td><span style="font-family:var(--fM);font-size:11px;color:var(--blue);cursor:pointer" onclick="event.stopPropagation();openDet('${ke}')">${k.key}</span></td>
+        <td style="font-family:var(--fM);font-size:11px;color:${k.expired?'var(--r)':'var(--t)'}">${fmtWIB(k.expires)}</td>
+        <td style="font-family:var(--fM);font-size:11px;color:var(--t2)">${fmtWIB(k.createdAt)}</td>
+        <td style="font-family:var(--fM);font-size:10px;color:var(--t2)" title="${k.hwid||''}">${k.hwid?hwidShort:'<span style="color:var(--t3)">Bebas</span>'}</td>
+        <td style="font-size:12px">${k.username||'<span style="color:var(--t3)">—</span>'}</td>
+        <td>${stat}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="ab" onclick="event.stopPropagation();openExt('${ke}','${k.expires||''}')">+Hari</button>
+          <button class="ab del" onclick="event.stopPropagation();doDelete('${ke}')">Hapus</button>
+        </td>
       </tr>`;
     }).join('')}</tbody>
   </table></div>`;
+  updateSelBar();
 }
-async function doBL(){
-  const hwid=document.getElementById('blHwid').value.trim();
-  const reason=document.getElementById('blReason').value.trim();
-  const days=parseInt(document.getElementById('blDays').value)||0;
-  const st=document.getElementById('blSt');
-  if(!hwid){st.textContent='HWID wajib';st.className='login-st err';return;}
-  if(!reason){st.textContent='Alasan wajib';st.className='login-st err';return;}
+
+function rowClick(e,key){if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'||e.target.tagName==='SPAN')return;openDet(key);}
+function sort(col){if(_sc===col)_sd*=-1;else{_sc=col;_sd=-1;}renderTbl();}
+function toggleSel(key,cb){if(cb.checked)_sel.add(key);else _sel.delete(key);updateSelBar();renderTbl();}
+function toggleAll(cb){const q=(document.getElementById('qSearch').value||'').toLowerCase();const f=document.getElementById('qFil').value;_keys.filter(k=>{if(f==='active'&&k.expired)return false;if(f==='expired'&&!k.expired)return false;if(f==='bound'&&!k.hwid)return false;if(f==='free'&&k.hwid)return false;if(q)return k.key.toLowerCase().includes(q)||(k.username||'').toLowerCase().includes(q);return true;}).forEach(k=>{if(cb.checked)_sel.add(k.key);else _sel.delete(k.key);});updateSelBar();renderTbl();}
+function clearSel(){_sel.clear();updateSelBar();}
+function updateSelBar(){const bar=document.getElementById('selBar');const c=_sel.size;bar.classList.toggle('on',c>0);document.getElementById('selCount').textContent=c+' key dipilih';}
+
+async function doDeleteSelected(){
+  if(!_sel.size)return;
+  if(!confirm(`Hapus ${_sel.size} key yang dipilih?`))return;
   try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'blacklist',hwid,reason,days})});
-    const d=await r.json();
-    if(d.success){st.textContent='Berhasil diblacklist';st.className='login-st ok';document.getElementById('blHwid').value='';document.getElementById('blReason').value='';loadBL();}
-    else{st.textContent=d.error||'Gagal';st.className='login-st err';}
-  }catch(e){st.textContent='Koneksi error';st.className='login-st err';}
+    const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'deleteselected',keys:[..._sel]})});
+    const d=await res.json();
+    if(d.success){setDS(`${d.deleted} key dihapus.`,'o');loadKeys();}else setDS(d.error||'Gagal.','e');
+  }catch(e){setDS('Kesalahan koneksi.','e');}
+}
+
+async function doDeleteAll(){
+  if(!confirm('Hapus SEMUA key? Tindakan ini tidak dapat dibatalkan.'))return;
+  if(!confirm('Konfirmasi sekali lagi: hapus semua key?'))return;
+  try{
+    const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'deleteall'})});
+    const d=await res.json();
+    if(d.success){setDS('Semua key dihapus.','o');loadKeys();}else setDS(d.error||'Gagal.','e');
+  }catch(e){setDS('Kesalahan koneksi.','e');}
+}
+
+async function doDelete(key){
+  if(!confirm(`Hapus key?\n${key}`))return;
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'delete',key})});const d=await res.json();if(d.success){setDS('Key dihapus.','o');loadKeys();}else setDS(d.error||'Gagal.','e');}
+  catch(e){setDS('Kesalahan koneksi.','e');}
+}
+async function doBulkDel(){
+  if(!confirm('Hapus semua key yang sudah expired?'))return;
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'bulkdelete'})});const d=await res.json();if(d.success){setDS(`${d.deleted} key expired dihapus.`,'o');loadKeys();}else setDS(d.error||'Gagal.','e');}
+  catch(e){setDS('Kesalahan koneksi.','e');}
+}
+
+function openGen(){document.getElementById('genRes').textContent='';document.getElementById('genModal').classList.add('on');}
+function closeGen(){document.getElementById('genModal').classList.remove('on');}
+async function doGen(){
+  const count=parseInt(document.getElementById('genCount').value)||1;
+  const days=parseInt(document.getElementById('genDays').value)||1;
+  document.getElementById('genBtn').disabled=true;
+  try{
+    const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'genkey',count,expireDays:days})});
+    const d=await res.json();
+    if(d.success){document.getElementById('genRes').textContent=d.keys.join('\n');setDS(`${d.keys.length} key digenerate (${days} hari).`,'o');loadKeys();}else{document.getElementById('genRes').textContent='';setDS(d.error||'Gagal.','e');}
+  }catch(e){setDS('Kesalahan koneksi.','e');}
+  document.getElementById('genBtn').disabled=false;
+}
+
+function openExt(k,exp){_ek=k;document.getElementById('extKey').textContent=k;document.getElementById('extExp').textContent=exp?fmtWIB(exp):'—';document.getElementById('extDays').value=1;document.getElementById('extModal').classList.add('on');}
+function closeExt(){document.getElementById('extModal').classList.remove('on');}
+async function doExt(){
+  const d=parseInt(document.getElementById('extDays').value)||1;
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'extend',key:_ek,days:d})});const data=await res.json();closeExt();if(data.success){setDS(`Key +${d} hari.`,'o');loadKeys();}else setDS(data.error||'Gagal.','e');}
+  catch(e){setDS('Kesalahan koneksi.','e');closeExt();}
+}
+document.getElementById('extModal').addEventListener('click',function(e){if(e.target===this)closeExt();});
+
+let _blTarget2='roblox';
+function openDet(key){
+  const k=_keys.find(x=>x.key===key);if(!k)return;_dm=k;
+  document.getElementById('dm-key').textContent=k.key;
+  document.getElementById('dm-hwid').textContent=k.hwid||'— Belum terhubung —';
+  document.getElementById('dm-bhwid').textContent=k.browserHwid||'—';
+  document.getElementById('dm-bhrow').style.display=k.source==='browser'&&k.browserHwid?'block':'none';
+  document.getElementById('dm-un').textContent=k.username||'—';
+  document.getElementById('dm-src').textContent=k.source||'script';
+  document.getElementById('dm-exp').textContent=fmtWIB(k.expires,true);
+  const st=document.getElementById('dm-st');st.textContent=k.expired?'Expired':'Aktif';st.style.color=k.expired?'var(--r)':'var(--g)';
+  document.getElementById('dm-blw').style.display='none';
+  document.getElementById('dm-blr').value='';document.getElementById('dm-bld').value='0';document.getElementById('dm-bls').textContent='';
+  document.getElementById('dm-btnbl').textContent='BL Roblox';
+  document.getElementById('dm-btnbl').style.display=k.hwid?'flex':'none';
+  document.getElementById('dm-btnblb').style.display=(k.source==='browser'&&k.browserHwid)?'flex':'none';
+  document.getElementById('dm-btnrst').style.display=k.hwid?'flex':'none';
+  document.getElementById('detModal').classList.add('on');
+}
+function closeDet(){document.getElementById('detModal').classList.remove('on');_dm=null;}
+function togBLF(target){
+  _blTarget2=target||'roblox';
+  const w=document.getElementById('dm-blw'),o=w.style.display!=='none';
+  w.style.display=o?'none':'block';
+  const titleEl=document.getElementById('dm-blw-title');
+  if(titleEl)titleEl.textContent='Blacklist HWID '+(_blTarget2==='browser'?'Browser':'Roblox');
+  document.getElementById(_blTarget2==='browser'?'dm-btnblb':'dm-btnbl').textContent=o?(_blTarget2==='browser'?'BL Browser':'BL Roblox'):'Batal';
+  if(!o)document.getElementById('dm-blr').focus();
+}
+function dmCp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{const b=document.querySelector(`[onclick="dmCp('${id}')"]`);if(b){b.textContent='Tersalin';setTimeout(()=>b.textContent='Salin',1200);}});}
+async function dmRst(){if(!_dm||!confirm(`Reset HWID?\n${_dm.key}`))return;try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'resethwid',key:_dm.key})});const d=await res.json();if(d.success){closeDet();setDS('HWID direset.','o');loadKeys();}else alert(d.error||'Gagal.');}catch(e){alert('Kesalahan koneksi.');}}
+async function dmBL(){
+  const targetHwid=_blTarget2==='browser'?(_dm&&_dm.browserHwid):(_dm&&_dm.hwid);
+  if(!_dm||!targetHwid){document.getElementById('dm-bls').textContent='HWID tidak tersedia.';document.getElementById('dm-bls').style.color='var(--r)';return;}
+  const r=(document.getElementById('dm-blr').value||'').trim(),d=parseInt(document.getElementById('dm-bld').value)||0,s=document.getElementById('dm-bls');
+  if(!r){s.textContent='Alasan wajib diisi.';s.style.color='var(--r)';return;}
+  s.textContent='Memproses...';s.style.color='var(--t2)';
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'blacklist',hwid:targetHwid,reason:r,days:d})});const data=await res.json();if(data.success){s.textContent=`Diblacklist${d?` (${d} hari)`:' (permanent)'}.`;s.style.color='var(--g)';setTimeout(()=>{closeDet();loadKeys();},1200);}else{s.textContent=data.error||'Gagal.';s.style.color='var(--r)';}}
+  catch(e){s.textContent='Kesalahan koneksi.';s.style.color='var(--r)';}
+}
+document.getElementById('detModal').addEventListener('click',function(e){if(e.target===this)closeDet();});
+
+async function loadLogs(){
+  document.getElementById('logList').innerHTML='<div class="empty">Memuat log...</div>';
+  try{const res=await fetch(`${API}/api/dashboard?secret=${encodeURIComponent(_sec)}&action=logs`);const d=await res.json();renderLogs(d.logs||[]);}
+  catch(e){document.getElementById('logList').innerHTML='<div class="empty" style="color:var(--r)">Gagal memuat.</div>';}
+}
+function renderLogs(logs){
+  const tc={delete:'lt-del',genkey:'lt-gen',extend:'lt-ext',resethwid:'lt-rst',bulkdelete:'lt-del',deleteall:'lt-del',deleteselected:'lt-del',blacklist:'lt-bl',unblacklist:'lt-ubl',saveconfig:'lt-gen'};
+  if(!logs.length){document.getElementById('logList').innerHTML='<div class="empty">Belum ada aktivitas.</div>';return;}
+  document.getElementById('logList').innerHTML=logs.map(l=>`<div class="li"><div class="lts">${fmtWIB(l.ts,true)}</div><div class="la"><span class="lt ${tc[l.action]||'lt-def'}">${l.action}</span>${l.detail||''}</div></div>`).join('');
+}
+
+let _chart=null;
+function buildChart(){
+  const ctx=document.getElementById('myChart');if(!ctx)return;
+  const labels=[],counts=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);labels.push(d.toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta',weekday:'short',day:'numeric'}));const ds=fmtWIB(d.toISOString());counts.push(_keys.filter(k=>fmtWIB(k.createdAt)===ds).length);}
+  if(_chart)_chart.destroy();
+  _chart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Key Dibuat',data:counts,backgroundColor:'rgba(41,84,255,0.2)',borderColor:'rgba(41,84,255,0.8)',borderWidth:2,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,color:'#8890b0',font:{family:'JetBrains Mono'}},grid:{color:'rgba(60,100,255,0.08)'}},x:{ticks:{color:'#8890b0',font:{family:'JetBrains Mono',size:10}},grid:{display:false}}}}});
+}
+
+async function loadBL(){
+  try{const res=await fetch(`${API}/api/dashboard?secret=${encodeURIComponent(_sec)}&action=listblacklist`);const d=await res.json();renderBL(d.blacklist||[]);}
+  catch(e){document.getElementById('blList').innerHTML='<div class="empty" style="color:var(--r)">Gagal memuat.</div>';}
+}
+function renderBL(list){
+  const el=document.getElementById('blList');
+  if(!list.length){el.innerHTML='<div class="empty">Tidak ada HWID yang diblacklist.</div>';return;}
+  el.innerHTML=`<div class="tw"><table><thead><tr><th>HWID</th><th>Alasan</th><th>Durasi</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${list.map(b=>{
+    const ip=!b.expireAt,ie=b.expired,es=ip?'Permanent':ie?'Kedaluwarsa':fmtWIB(b.expireAt);
+    const sb=ie?`<span class="badge badge-gray">Expired</span>`:ip?`<span class="badge badge-err">Permanent</span>`:`<span class="badge badge-blue">Sementara</span>`;
+    return `<tr><td style="font-family:var(--fM);font-size:11px;color:var(--blue)" title="${b.hwid}">${b.hwid.substring(0,20)}${b.hwid.length>20?'…':''}</td><td style="font-size:12px">${b.reason}</td><td style="font-family:var(--fM);font-size:11px;color:var(--t2)">${es}</td><td>${sb}</td><td><button onclick="doUnBL('${b.hwid}')" class="ab ok">Hapus</button></td></tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+async function doAddBL(){
+  const h=(document.getElementById('blHwid').value||'').trim(),r=(document.getElementById('blReason').value||'').trim(),d=parseInt(document.getElementById('blDays').value)||0,s=document.getElementById('blStat');
+  if(!h||!r){s.textContent='HWID dan alasan wajib diisi.';s.className='stat e';return;}
+  s.textContent='Memproses...';s.className='stat';
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'blacklist',hwid:h,reason:r,days:d})});const data=await res.json();if(data.success){s.textContent=`Diblacklist${d?` (${d} hari)`:' (permanent)'}.`;s.className='stat o';document.getElementById('blHwid').value='';document.getElementById('blReason').value='';loadBL();}else{s.textContent=data.error||'Gagal.';s.className='stat e';}}
+  catch(e){s.textContent='Kesalahan koneksi.';s.className='stat e';}
 }
 async function doUnBL(hwid){
-  if(!confirm(`Hapus dari blacklist?\n${hwid}`)) return;
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'unblacklist',hwid})});
-    const d=await r.json();
-    if(d.success){toast('Dihapus dari blacklist','ok');loadBL();}
-    else toast(d.error||'Gagal','err');
-  }catch(e){toast('Koneksi error','err');}
+  if(!confirm(`Hapus dari blacklist?\n${hwid}`))return;
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'unblacklist',hwid})});const d=await res.json();if(d.success)loadBL();else alert(d.error||'Gagal.');}
+  catch(e){alert('Kesalahan koneksi.');}
 }
 
-// LOGS
-async function loadLogs(){
-  document.getElementById('logList').innerHTML='<div style="font-family:\'Courier New\',monospace;font-size:11px;color:var(--muted)">Memuat log...</div>';
-  try{
-    const r=await fetch(`${API}/dashboard?secret=${encodeURIComponent(_sec)}&action=logs`);
-    const d=await r.json();
-    const logs=d.logs||[];
-    if(!logs.length){document.getElementById('logList').innerHTML='<div style="font-family:var(--orb);font-size:9px;color:var(--muted2);letter-spacing:2px;padding:12px 0">BELUM ADA LOG</div>';return;}
-    const clsMap={delete:'lt-del',genkey:'lt-gen',extend:'lt-ext',resethwid:'lt-rst',bulkdelete:'lt-del',saveconfig:'lt-cfg',blacklist:'lt-blk',unblacklist:'lt-gen'};
-    document.getElementById('logList').innerHTML=logs.map(l=>{
-      const ts=new Date(l.ts).toLocaleString('id-ID');
-      const cls=clsMap[l.action]||'lt-def';
-      return `<div class="log-item"><div class="log-ts">${ts}</div><div class="log-ct"><span class="log-tag ${cls}">${l.action}</span>${l.detail||''}</div></div>`;
-    }).join('');
-  }catch(e){document.getElementById('logList').innerHTML='<div style="color:var(--red);font-family:\'Courier New\',monospace;font-size:11px">Gagal memuat log</div>';}
+async function loadCfg(){
+  try{const res=await fetch(`${API}/api/dashboard?secret=${encodeURIComponent(_sec)}&action=getconfig`);const d=await res.json();if(d.config){document.getElementById('cfgPerDay').value=d.config.maxPerDay||0;document.getElementById('cfgTotal').value=d.config.maxTotal||0;}}catch(e){}
+  if(window._cfg){document.getElementById('cfgPerDay').value=window._cfg.maxPerDay||0;document.getElementById('cfgTotal').value=window._cfg.maxTotal||0;}
+}
+async function saveCfg(){
+  const maxPerDay=parseInt(document.getElementById('cfgPerDay').value)||0,maxTotal=parseInt(document.getElementById('cfgTotal').value)||0,s=document.getElementById('cfgStat');
+  s.textContent='Menyimpan...';s.className='stat l';
+  try{const res=await fetch(`${API}/api/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'saveconfig',maxPerDay,maxTotal})});const d=await res.json();if(d.success){s.textContent='Konfigurasi disimpan.';s.className='stat o';window._cfg=d.config;}else{s.textContent=d.error||'Gagal.';s.className='stat e';}}
+  catch(e){s.textContent='Kesalahan koneksi.';s.className='stat e';}
 }
 
-// CONFIG
-function loadCfg(){
-  const c=window._cfg||{};
-  document.getElementById('cfgDay').value=c.maxPerDay||0;
-  document.getElementById('cfgTotal').value=c.maxTotal||0;
-}
-async function saveConfig(){
-  const day=parseInt(document.getElementById('cfgDay').value)||0;
-  const tot=parseInt(document.getElementById('cfgTotal').value)||0;
-  const st=document.getElementById('cfgSt');
-  st.textContent='Menyimpan...';st.className='login-st';
-  try{
-    const r=await fetch(`${API}/dashboard`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:_sec,action:'saveconfig',maxPerDay:day,maxTotal:tot})});
-    const d=await r.json();
-    if(d.success){window._cfg=d.config;st.textContent='Tersimpan';st.className='login-st ok';}
-    else{st.textContent=d.error||'Gagal';st.className='login-st err';}
-  }catch(e){st.textContent='Koneksi error';st.className='login-st err';}
-}
-
-// MODALS
-function closeMod(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-ov').forEach(el=>{
-  el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
-});
+document.getElementById('genModal').addEventListener('click',function(e){if(e.target===this)closeGen();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeGen();closeExt();closeDet();}});
 </script>
 </body>
 </html>
