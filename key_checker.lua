@@ -1,23 +1,21 @@
--- VertictHub Key System v2
--- Taruh di PALING ATAS sssource-1.lua, sebelum semua kode lain
+-- VertictHub Key System v2.1
+-- Taruh di PALING ATAS script, sebelum semua kode lain
 -- ============================================================
 
 local Players     = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
-local API_BASE  = "https://tes-nine-theta.vercel.app/" -- ganti URL Vercel kamu
-local KEY_FILE  = "vh_key3.txt"
-local RETRY_MAX = 3     -- [NEW] max retry kalau koneksi gagal
-local TIMEOUT   = 10    -- [NEW] timeout detik untuk polling
+local API_BASE  = "https://vh-api-alpha.vercel.app" -- ganti URL Vercel kamu
+local KEY_FILE  = "vh_key.txt"
+local RETRY_MAX = 3
+local TIMEOUT   = 10
 
--- ── HWID ──────────────────────────────────────────────────
--- [FIX] Fallback lebih robust kalau RbxAnalyticsService gagal
+-- ── HWID ──────────────────────────────────────────────────────
 local function getHWID()
     local uid = tostring(LocalPlayer.UserId or "0")
     local mid = "fallback"
 
-    -- Coba RbxAnalyticsService
     pcall(function()
         local id = tostring(game:GetService("RbxAnalyticsService"):GetClientId())
         if id and id ~= "" and id ~= "nil" and id ~= "undefined" then
@@ -25,7 +23,6 @@ local function getHWID()
         end
     end)
 
-    -- Fallback pakai SourceGameId
     if mid == "fallback" then
         pcall(function()
             local info = LocalPlayer:GetJoinData()
@@ -36,7 +33,6 @@ local function getHWID()
         end)
     end
 
-    -- Fallback pakai GameId
     if mid == "fallback" then
         pcall(function()
             mid = tostring(game.GameId or "0")
@@ -44,24 +40,22 @@ local function getHWID()
     end
 
     local hwid = uid .. "-" .. mid
-    -- Pastikan tidak ada "undefined" atau "nil" di HWID
     hwid = hwid:gsub("undefined", "x"):gsub("nil", "x")
     return hwid
 end
 
--- ── Simpan / Load key ─────────────────────────────────────
+-- ── Player info ───────────────────────────────────────────────
 local function getPlayerInfo()
     local username = "unknown"
-    local userId = "0"
-
+    local userId   = "0"
     pcall(function()
-        username = Players.LocalPlayer.Name
-        userId = tostring(Players.LocalPlayer.UserId)
+        username = tostring(LocalPlayer.Name)
+        userId   = tostring(LocalPlayer.UserId)
     end)
-
     return username, userId
 end
 
+-- ── Key storage ───────────────────────────────────────────────
 local function saveKey(key)
     pcall(function() writefile(KEY_FILE, key) end)
 end
@@ -69,17 +63,16 @@ end
 local function loadKey()
     local ok, key = pcall(function() return readfile(KEY_FILE) end)
     if ok and type(key) == "string" and #key > 5 then
-        return key:match("^%s*(.-)%s*$") -- trim whitespace
+        return key:match("^%s*(.-)%s*$")
     end
     return nil
 end
 
--- [NEW] Hapus key tersimpan (dipanggil kalau expired/invalid)
 local function clearKey()
     pcall(function() writefile(KEY_FILE, "") end)
 end
 
--- ── HTTP request dengan retry ──────────────────────────────
+-- ── HTTP GET dengan retry ─────────────────────────────────────
 local function httpGet(url)
     local result, err
     for i = 1, RETRY_MAX do
@@ -95,23 +88,21 @@ local function httpGet(url)
     return nil, err
 end
 
--- ── Cek key ke API ────────────────────────────────────────
+-- ── Cek key ke API ────────────────────────────────────────────
 local function checkKeyAPI(key, hwid)
-    local username = tostring(Players.LocalPlayer.Name or "unknown")
-    local userId   = tostring(Players.LocalPlayer.UserId or "0")
+    local username, userId = getPlayerInfo()
 
     local url = API_BASE
-        .. "/api/checkkey?key=" .. HttpService:UrlEncode(key)
-        .. "&hwid=" .. HttpService:UrlEncode(hwid)
-        .. "&username=" .. HttpService:UrlEncode(username)
-        .. "&userId=" .. HttpService:UrlEncode(tostring(userId))
+        .. "/api/checkkey?key="      .. HttpService:UrlEncode(key)
+        .. "&hwid="                  .. HttpService:UrlEncode(hwid)
+        .. "&username="              .. HttpService:UrlEncode(username)
+        .. "&userId="                .. HttpService:UrlEncode(userId)
 
     local raw, httpErr = httpGet(url)
     if not raw then
         return false, "❌ Gagal koneksi ke server (" .. (httpErr or "?") .. ")"
     end
 
-    -- [FIX] Tangani JSON parse error
     local ok, data = pcall(function() return HttpService:JSONDecode(raw) end)
     if not ok or type(data) ~= "table" then
         return false, "❌ Response server tidak valid"
@@ -120,7 +111,6 @@ local function checkKeyAPI(key, hwid)
     if data.valid then
         local exp = ""
         if data.expires then
-            -- Format tanggal expire jadi lebih readable
             exp = " | Expire: " .. tostring(data.expires):sub(1, 10)
         end
         local msg = data.bound
@@ -128,8 +118,8 @@ local function checkKeyAPI(key, hwid)
             or  ("✅ Key valid" .. exp)
         return true, msg
     else
-        -- [FIX] Clear key kalau expired supaya auto-load gak stuck
         local reason = data.reason or "Key tidak valid"
+        -- Clear key kalau expired atau tidak ditemukan
         if reason:find("expired") or reason:find("tidak ditemukan") then
             clearKey()
         end
@@ -137,29 +127,29 @@ local function checkKeyAPI(key, hwid)
     end
 end
 
--- ══════════════════════════════════════════════════════════
+-- ══════════════════════════════════════════════════════════════
 -- GUI
--- ══════════════════════════════════════════════════════════
+-- ══════════════════════════════════════════════════════════════
 
 local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name          = "VHKeySystem"
-KeyGui.ResetOnSpawn  = false
-KeyGui.DisplayOrder  = 9999
-KeyGui.IgnoreGuiInset = true -- [FIX] Biar gak kegeser topbar
-KeyGui.Parent = game:GetService("CoreGui")
+KeyGui.Name           = "VHKeySystem"
+KeyGui.ResetOnSpawn   = false
+KeyGui.DisplayOrder   = 9999
+KeyGui.IgnoreGuiInset = true
+KeyGui.Parent         = game:GetService("CoreGui")
 
 -- Overlay gelap
 local Overlay = Instance.new("Frame", KeyGui)
-Overlay.Size                  = UDim2.new(1, 0, 1, 0)
-Overlay.BackgroundColor3      = Color3.fromRGB(2, 2, 8)
+Overlay.Size                   = UDim2.new(1, 0, 1, 0)
+Overlay.BackgroundColor3       = Color3.fromRGB(2, 2, 8)
 Overlay.BackgroundTransparency = 0.15
-Overlay.BorderSizePixel       = 0
-Overlay.ZIndex                = 1
+Overlay.BorderSizePixel        = 0
+Overlay.ZIndex                 = 1
 
 -- Card utama
 local Card = Instance.new("Frame", KeyGui)
-Card.Size = UDim2.new(0, 370, 0, 280)
-Card.Position         = UDim2.new(0.5, -185, 0.5, -120)
+Card.Size             = UDim2.new(0, 380, 0, 300)
+Card.Position         = UDim2.new(0.5, -190, 0.5, -130)
 Card.BackgroundColor3 = Color3.fromRGB(9, 9, 18)
 Card.BorderSizePixel  = 0
 Card.ZIndex           = 2
@@ -170,16 +160,16 @@ Stroke.Color     = Color3.fromRGB(70, 70, 160)
 Stroke.Thickness = 1.5
 
 local Pad = Instance.new("UIPadding", Card)
-Pad.PaddingLeft   = UDim.new(0, 24)
-Pad.PaddingRight  = UDim.new(0, 24)
-Pad.PaddingTop    = UDim.new(0, 24)
-Pad.PaddingBottom = UDim.new(0, 24)
+Pad.PaddingLeft   = UDim.new(0, 22)
+Pad.PaddingRight  = UDim.new(0, 22)
+Pad.PaddingTop    = UDim.new(0, 22)
+Pad.PaddingBottom = UDim.new(0, 22)
 
 local Layout = Instance.new("UIListLayout", Card)
 Layout.Padding   = UDim.new(0, 10)
 Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
--- ── Helper buat elemen ────────────────────────────────────
+-- ── Helpers UI ────────────────────────────────────────────────
 local function makeLabel(parent, text, size, color, order, bold)
     local lbl = Instance.new("TextLabel", parent)
     lbl.Size               = UDim2.new(1, 0, 0, size)
@@ -196,7 +186,7 @@ end
 
 local function makeBtn(parent, text, bgColor, textColor, order)
     local btn = Instance.new("TextButton", parent)
-    btn.Size             = UDim2.new(1, 0, 0, 40)
+    btn.Size             = UDim2.new(1, 0, 0, 38)
     btn.BackgroundColor3 = bgColor
     btn.BorderSizePixel  = 0
     btn.Text             = text
@@ -204,15 +194,14 @@ local function makeBtn(parent, text, bgColor, textColor, order)
     btn.TextSize         = 13
     btn.Font             = Enum.Font.SourceSansBold
     btn.LayoutOrder      = order
-    btn.AutoButtonColor  = false -- [FIX] Handle hover manual biar lebih smooth
+    btn.AutoButtonColor  = false
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
     return btn
 end
 
--- ── Elemen GUI ────────────────────────────────────────────
-
+-- ── Elemen GUI ────────────────────────────────────────────────
 makeLabel(Card, "⚡ VertictHub", 22, Color3.fromRGB(150, 150, 255), 0, true)
-makeLabel(Card, "Verifikasi Key untuk melanjutkan", 12, Color3.fromRGB(90, 90, 120), 1, false)
+makeLabel(Card, "Masukkan key untuk melanjutkan", 12, Color3.fromRGB(90, 90, 120), 1, false)
 
 -- Separator
 local Sep = Instance.new("Frame", Card)
@@ -223,7 +212,7 @@ Sep.LayoutOrder      = 2
 
 -- Input background
 local InputBg = Instance.new("Frame", Card)
-InputBg.Size             = UDim2.new(1, 0, 0, 42)
+InputBg.Size             = UDim2.new(1, 0, 0, 40)
 InputBg.BackgroundColor3 = Color3.fromRGB(14, 14, 26)
 InputBg.BorderSizePixel  = 0
 InputBg.LayoutOrder      = 3
@@ -261,15 +250,14 @@ local GetKeyBtn = makeBtn(Card,
 local StatusL = makeLabel(Card, "", 11, Color3.fromRGB(200, 100, 100), 6, false)
 StatusL.TextWrapped = true
 
--- ── State & Logic ─────────────────────────────────────────
-
--- FIX ZINDEX
-for _,v in pairs(Card:GetDescendants()) do
+-- Fix ZIndex
+for _, v in pairs(Card:GetDescendants()) do
     if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") or v:IsA("Frame") then
         v.ZIndex = 3
     end
 end
 
+-- ── Logic ─────────────────────────────────────────────────────
 local isBusy = false
 
 local function setStatus(msg, isOk)
@@ -280,32 +268,31 @@ local function setStatus(msg, isOk)
 end
 
 local function setBusy(state)
-    isBusy            = state
-    SubmitBtn.Active  = not state
+    isBusy           = state
+    SubmitBtn.Active = not state
     SubmitBtn.BackgroundTransparency = state and 0.4 or 0
 end
 
 local function doVerify(key)
     if isBusy then return end
 
-    -- [FIX] Validasi format key di client sebelum kirim request
+    -- Validasi format key di client
     if not key:match("^VH%-[A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9]%-[A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9]%-[A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9][A-F0-9]$") then
-        setStatus("❌ Format key salah — contoh: VH-A1B2C3-D4E5F6-G7H8I9", false)
+        setStatus("❌ Format key salah — contoh: VH-A1B2C3-D4E5F6-789ABC", false)
         return
     end
 
     setBusy(true)
     setStatus("⏳ Memeriksa key...", true)
 
-    local hwid = getHWID()
-    local valid, msg = checkKeyAPI(key, hwid)
+    local hwid             = getHWID()
+    local valid, msg       = checkKeyAPI(key, hwid)
 
     setBusy(false)
 
     if valid then
         setStatus(msg, true)
         saveKey(key)
-        -- [FIX] Delay lebih lama biar user sempat baca konfirmasi
         task.wait(1.8)
         KeyGui:Destroy()
     else
@@ -313,33 +300,25 @@ local function doVerify(key)
     end
 end
 
--- Tombol submit
+-- ── Events ────────────────────────────────────────────────────
 SubmitBtn.MouseButton1Click:Connect(function()
     local key = KeyInput.Text:gsub("%s+", ""):upper()
     doVerify(key)
 end)
 
--- Hover effect submit button
 SubmitBtn.MouseEnter:Connect(function()
-    if not isBusy then
-        SubmitBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 170)
-    end
+    if not isBusy then SubmitBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 170) end
 end)
 SubmitBtn.MouseLeave:Connect(function()
-    if not isBusy then
-        SubmitBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 140)
-    end
+    if not isBusy then SubmitBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 140) end
 end)
 
--- Enter key di textbox
 KeyInput.FocusLost:Connect(function(enter)
     if enter then
-        local key = KeyInput.Text:gsub("%s+", ""):upper()
-        doVerify(key)
+        doVerify(KeyInput.Text:gsub("%s+", ""):upper())
     end
 end)
 
--- Input focus highlight
 KeyInput.Focused:Connect(function()
     InputStroke.Color = Color3.fromRGB(90, 90, 180)
 end)
@@ -347,20 +326,20 @@ KeyInput.FocusLost:Connect(function()
     InputStroke.Color = Color3.fromRGB(50, 50, 90)
 end)
 
--- Tombol get key - pakai signed token biar HWID gak bisa diedit
+-- ── Get key button — generate signed link ────────────────────
 GetKeyBtn.MouseButton1Click:Connect(function()
-    local hwid = getHWID()
-    local username, userId = getPlayerInfo()
+    local hwid               = getHWID()
+    local username, userId   = getPlayerInfo()
 
     setStatus("⏳ Membuat link aman...", true)
 
-    -- Build URL dalam satu baris
     local hwidEnc     = HttpService:UrlEncode(tostring(hwid))
     local usernameEnc = HttpService:UrlEncode(tostring(username))
     local userIdEnc   = HttpService:UrlEncode(tostring(userId))
-    local tokenUrl    = API_BASE .. "/api/token?hwid=" .. hwidEnc .. "&username=" .. usernameEnc .. "&userId=" .. userIdEnc
+    local tokenUrl    = API_BASE .. "/api/token?hwid=" .. hwidEnc
+                        .. "&username=" .. usernameEnc
+                        .. "&userId="   .. userIdEnc
 
-    -- Request signed token ke API (GET)
     local ok, raw = pcall(function()
         return game:HttpGet(tokenUrl, true)
     end)
@@ -373,9 +352,10 @@ GetKeyBtn.MouseButton1Click:Connect(function()
     local parsed = pcall(function()
         local data = HttpService:JSONDecode(raw)
         local url  = API_BASE .. (data.url or "")
+        -- Coba copy ke clipboard
         local clipOk = pcall(function() setclipboard(url) end)
         if clipOk then
-            setStatus("✓ Link aman disalin! Buka di browser → klik Ambil Key", true)
+            setStatus("✓ Link disalin! Buka di browser → klik Generate", true)
         else
             setStatus("Buka: " .. url, true)
         end
@@ -386,8 +366,7 @@ GetKeyBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- ── Auto check key tersimpan ──────────────────────────────
-
+-- ── Auto load key tersimpan ───────────────────────────────────
 task.spawn(function()
     local saved = loadKey()
     if saved and #saved > 5 then
@@ -398,11 +377,11 @@ task.spawn(function()
     end
 end)
 
--- ── BLOCK eksekusi sampai GUI dihancurkan (key valid) ─────
+-- ── Block eksekusi sampai key valid ──────────────────────────
 while KeyGui and KeyGui.Parent do
     task.wait(0.1)
 end
 
 -- ============================================================
--- ✅ KEY VALID — TARUH SISA KODE SCRIPT DI BAWAH INI
+-- ✅ KEY VALID — SISA KODE SCRIPT DI BAWAH INI
 -- ============================================================
