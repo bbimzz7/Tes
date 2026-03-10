@@ -9,6 +9,18 @@ const ADMIN_SECRET   = process.env.ADMIN_SECRET;
 
 import crypto from "crypto";
 
+
+// ── Timezone WIB (UTC+7) helpers ─────────────────────────
+function toWIB(date) {
+    // Tambah 7 jam ke UTC
+    return new Date(date.getTime() + 7 * 60 * 60 * 1000);
+}
+function todayWIB() {
+    return toWIB(new Date()).toISOString().substring(0, 10);
+}
+function nowISOWIB() {
+    return toWIB(new Date()).toISOString().replace('T', ' ').substring(0, 19) + ' WIB';
+}
 // ── GitHub helpers ────────────────────────────────────────────
 async function ghGet(file) {
     const res = await fetch(
@@ -67,6 +79,18 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     if (req.method === "OPTIONS") return res.status(200).end();
 
+    // ── Public stats (no auth) ───────────────────────────────
+    const action0 = req.method === "GET" ? req.query.action : (req.body || {}).action;
+    if (action0 === "publicstats") {
+        try {
+            const [{ data: keys }, { data: config }] = await Promise.all([ghGet(GITHUB_FILE), ghGet(CONFIG_FILE)]);
+            const now2 = Date.now();
+            const active = Object.values(keys).filter(v => new Date(v.expires).getTime() > now2).length;
+            const maxTotal = (config && config.maxTotal) || 0;
+            return res.json({ active, maxTotal });
+        } catch(e) { return res.json({ active: 0, maxTotal: 0 }); }
+    }
+
     const secret = req.method === "GET" ? req.query.secret : (req.body || {}).secret;
     if (!authOk(secret)) return res.status(401).json({ error: "Unauthorized" });
 
@@ -74,7 +98,7 @@ export default async function handler(req, res) {
 
     try {
         const now   = Date.now();
-        const today = new Date().toISOString().substring(0, 10);
+        const today = todayWIB();
 
         // ── LIST ──────────────────────────────────────────────
         if (action === "list") {
@@ -83,17 +107,20 @@ export default async function handler(req, res) {
                 ghGet(CONFIG_FILE),
                 ghGet(BLACKLIST_FILE),
             ]);
+            const bl2 = blacklist || {};
             const list = Object.entries(keys).map(([k, v]) => ({
-                key:       k,
-                expires:   v.expires,
-                expired:   new Date(v.expires).getTime() < now,
-                hwid:      v.hwid      || null,
-                username:  v.username  || null,
-                userId:    v.userId    || null,
-                boundAt:   v.boundAt   || null,
-                createdAt: v.createdAt || null,
-                lastUsed:  v.lastUsed  || null,
-                blacklisted: !!(blacklist || {})[v.hwid],
+                key:         k,
+                expires:     v.expires,
+                expired:     new Date(v.expires).getTime() < now,
+                hwid:        v.hwid        || null,
+                browserHwid: v.browserHwid || null,
+                username:    v.username    || null,
+                userId:      v.userId      || null,
+                source:      v.source      || "script",
+                boundAt:     v.boundAt     || null,
+                createdAt:   v.createdAt   || null,
+                lastUsed:    v.lastUsed    || null,
+                blacklisted: !!(bl2[v.hwid] || (v.browserHwid && bl2[v.browserHwid])),
             }));
             const total       = list.length;
             const active      = list.filter(x => !x.expired).length;
@@ -146,6 +173,29 @@ export default async function handler(req, res) {
             }
             if (count > 0) await ghPut(GITHUB_FILE, keys, sha, "bulk delete expired");
             addLog("bulkdelete", `${count} key expired dihapus`);
+            return res.json({ success: true, deleted: count });
+        }
+
+        // ── DELETE ALL ────────────────────────────────────────
+        if (action === "deleteall") {
+            const { sha } = await ghGet(GITHUB_FILE);
+            await ghPut(GITHUB_FILE, {}, sha, "delete all keys");
+            addLog("deleteall", "Semua key dihapus");
+            return res.json({ success: true });
+        }
+
+        // ── BULK DELETE SELECTED ──────────────────────────────
+        if (action === "deleteselected") {
+            const selectedKeys = req.body.keys || [];
+            if (!Array.isArray(selectedKeys) || selectedKeys.length === 0)
+                return res.json({ error: "Tidak ada key yang dipilih" });
+            const { data: keys, sha } = await ghGet(GITHUB_FILE);
+            let count = 0;
+            for (const k of selectedKeys) {
+                if (keys[k.toUpperCase()]) { delete keys[k.toUpperCase()]; count++; }
+            }
+            if (count > 0) await ghPut(GITHUB_FILE, keys, sha, `delete ${count} keys`);
+            addLog("deleteselected", `${count} key dihapus`);
             return res.json({ success: true, deleted: count });
         }
 

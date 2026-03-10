@@ -31,5 +31,5 @@ export default async function handler(req, res) {
     const encoded = Buffer.from(payload).toString("base64url");
     const sig     = sign(encoded);
 
-    return res.json({ url: `/?d=${encoded}&s=${sig}` });
+    return res.json({ url: `/getkey/?d=${encoded}&s=${sig}` });
 }

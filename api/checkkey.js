@@ -1,6 +1,5 @@
-// GET /api/checkkey?key=XXXX&hwid=YYYY
-// Pertama kali → bind HWID ke key
-// Selanjutnya  → cek HWID cocok atau tidak
+// GET /api/checkkey?key=XXXX&hwid=YYYY&username=ZZZZ
+// Bind HWID ke key (pertama kali), cek HWID + username match selanjutnya
 // Returns { valid: true/false, reason?, expires?, hwid? }
 
 const GITHUB_TOKEN   = process.env.GITHUB_TOKEN;
@@ -10,7 +9,7 @@ const BLACKLIST_FILE = process.env.GITHUB_BLACKLIST_FILE || "blacklist.json";
 
 const KEY_REGEX = /^VH-[A-F0-9]{6}-[A-F0-9]{6}-[A-F0-9]{6}$/;
 
-// ── In-memory rate limiter (per HWID + per IP) ───────────────
+// ── Rate limiter ──────────────────────────────────────────────
 const rateLimitMap = new Map();
 const RATE_LIMIT_MAX    = 10;
 const RATE_LIMIT_WINDOW = 60 * 1000;
@@ -34,8 +33,7 @@ async function ghGet(file) {
     );
     if (!res.ok) return { data: {}, sha: null };
     const json = await res.json();
-    const content = JSON.parse(Buffer.from(json.content, "base64").toString("utf8"));
-    return { data: content, sha: json.sha };
+    return { data: JSON.parse(Buffer.from(json.content, "base64").toString("utf8")), sha: json.sha };
 }
 
 async function ghPut(file, data, sha, message) {
@@ -44,14 +42,10 @@ async function ghPut(file, data, sha, message) {
     if (sha) body.sha = sha;
     const res = await fetch(
         `https://api.github.com/repos/${GITHUB_REPO}/contents/${file}`,
-        {
-            method: "PUT",
-            headers: { Authorization: `token ${GITHUB_TOKEN}`, "Content-Type": "application/json", "User-Agent": "vh-key-api" },
-            body: JSON.stringify(body),
-        }
+        { method: "PUT", headers: { Authorization: `token ${GITHUB_TOKEN}`, "Content-Type": "application/json", "User-Agent": "vh-key-api" }, body: JSON.stringify(body) }
     );
-    if (res.status === 409) throw new Error("Konflik data, coba lagi sebentar");
-    if (!res.ok) throw new Error("Gagal simpan data ke GitHub");
+    if (res.status === 409) throw new Error("Konflik data");
+    if (!res.ok) throw new Error("Gagal simpan ke GitHub");
 }
 
 export default async function handler(req, res) {
@@ -70,14 +64,13 @@ export default async function handler(req, res) {
     if (!KEY_REGEX.test(key)) return res.status(400).json({ valid: false, reason: "Format key tidak valid" });
     if (hwid.length > 128)   return res.status(400).json({ valid: false, reason: "HWID tidak valid" });
 
-    // ── Rate limit by HWID + IP ───────────────────────────────
-    const ip         = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
+    // ── Rate limit ────────────────────────────────────────────
+    const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
     if (isRateLimited(`hwid:${hwid}`) || isRateLimited(`ip:${ip}`)) {
         return res.status(429).json({ valid: false, reason: "Terlalu banyak request. Tunggu 1 menit." });
     }
 
     try {
-        // ── Load keys + blacklist paralel ─────────────────────
         const [{ data: keys, sha: keysSha }, { data: blacklist }] = await Promise.all([
             ghGet(GITHUB_FILE),
             ghGet(BLACKLIST_FILE),
@@ -89,14 +82,11 @@ export default async function handler(req, res) {
             const blEntry = bl[hwid];
             const reason  = blEntry.reason || "Device kamu telah diblacklist";
             if (blEntry.expireAt) {
-                // Blacklist sementara
                 if (Date.now() < new Date(blEntry.expireAt).getTime()) {
-                    const expDate = blEntry.expireAt.substring(0, 10);
-                    return res.status(403).json({ valid: false, reason: `❌ ${reason} (sampai ${expDate})` });
+                    return res.status(403).json({ valid: false, reason: `❌ ${reason} (sampai ${blEntry.expireAt.substring(0, 10)})` });
                 }
-                // Sudah expired → lanjut normal
+                // Blacklist expired → lanjut normal
             } else {
-                // Permanent
                 return res.status(403).json({ valid: false, reason: `❌ ${reason}` });
             }
         }
@@ -108,13 +98,6 @@ export default async function handler(req, res) {
         const expires = new Date(entry.expires).getTime();
         if (now > expires) return res.json({ valid: false, reason: "Key sudah expired" });
 
-        // ── Cek username cocok (jika key sudah ada username terdaftar) ─
-        if (entry.username && username) {
-            if (entry.username.toLowerCase() !== username.toLowerCase()) {
-                return res.json({ valid: false, reason: `Username tidak sesuai. Key ini terdaftar untuk: ${entry.username}` });
-            }
-        }
-
         // ── Bind HWID (pertama kali) ──────────────────────────
         const isFirstBind = !entry.hwid;
         if (isFirstBind) {
@@ -124,12 +107,24 @@ export default async function handler(req, res) {
             return res.json({ valid: false, reason: "Key sudah digunakan di device lain" });
         }
 
+        // ── Validasi username (wajib sama jika sudah ter-bind) ─
+        // Key yang dibuat via browser: username di-enforce
+        // Key dari script: username opsional tapi di-update kalau ada
+        if (entry.username && username) {
+            if (entry.username.toLowerCase() !== username.toLowerCase()) {
+                return res.json({
+                    valid: false,
+                    reason: `Username tidak cocok! Key ini terdaftar atas nama "${entry.username}". Username Roblox kamu harus sama.`
+                });
+            }
+        }
+
         // ── Update lastUsed + username ────────────────────────
         keys[key].lastUsed = new Date().toISOString();
         if (username && keys[key].username !== username) keys[key].username = username;
         if (userId   && keys[key].userId   !== userId)   keys[key].userId   = userId;
 
-        // ── Retry loop untuk handle 409 race condition ────────
+        // ── Save dengan retry untuk handle 409 ───────────────
         let saved = false;
         let retryKeys = keys;
         let retrySha  = keysSha;
@@ -140,10 +135,8 @@ export default async function handler(req, res) {
                 break;
             } catch (e) {
                 if (e.message.includes("Konflik") && attempt < 3) {
-                    // Re-fetch dan merge
                     await new Promise(r => setTimeout(r, 600 * attempt));
                     const fresh = await ghGet(GITHUB_FILE);
-                    // Terapkan ulang perubahan ke data terbaru
                     if (fresh.data[key]) {
                         fresh.data[key].lastUsed = retryKeys[key].lastUsed;
                         if (isFirstBind) {
@@ -162,15 +155,15 @@ export default async function handler(req, res) {
         }
 
         if (!saved) {
-            // Tetap kembalikan valid tapi catat warning
             console.warn("[checkkey] Gagal simpan setelah 3x retry, key tetap valid");
         }
 
         return res.json({
-            valid:   true,
-            expires: entry.expires,
+            valid:    true,
+            expires:  entry.expires,
             hwid,
-            bound:   isFirstBind,
+            bound:    isFirstBind,
+            username: keys[key].username || null,
         });
 
     } catch (e) {
